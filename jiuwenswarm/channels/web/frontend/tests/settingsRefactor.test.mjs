@@ -1973,9 +1973,9 @@ test('legacy channel and More surfaces are removed while Settings owns their rep
   const settingsNavigation = source('src/features/settings/settingsNavigation.ts');
   const modelDialog = source('src/features/settings/modules/models/ModelDialog.tsx');
   const mainNavItems = sidebar.slice(sidebar.indexOf('const mainNavItems'), sidebar.indexOf('export function SessionSidebar'));
-  assert.match(mainNavItems, /key: 'updatepanel'/);
   assert.match(mainNavItems, /key: 'settings'/);
   assert.doesNotMatch(mainNavItems, /key: 'channels'/);
+  assert.doesNotMatch(mainNavItems, /key: 'updatepanel'/);
   assert.doesNotMatch(sidebar, /moreNavItems|configpanel|browserpanel|key: 'extensions'/);
   assert.match(app, /<SettingsPage/);
   assert.match(app, /initialModuleId=\{requestedSettingsModuleId \?\? undefined\}/);
