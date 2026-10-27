@@ -1,0 +1,19 @@
+.tender-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.tender-placeholder__card {
+  text-align: center;
+}
+
+.tender-placeholder__title {
+  color: var(--color-text-primary);
+}
+
+.tender-placeholder__description {
+  color: var(--color-text-secondary);
+}
