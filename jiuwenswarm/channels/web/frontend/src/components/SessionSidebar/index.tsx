@@ -10,10 +10,10 @@ import './SessionSidebar.css';
 import PlusIcon from '../../assets/sidebar/plus.svg?react';
 import logoIcon from '/logo.svg';
 import SettingsIcon from '../../assets/settings/app-navigation/settings.svg?react';
-import UpdateIcon from '../../assets/sidebar/download-update.svg?react';
+import HomeIcon from '../../assets/sidebar/home.svg?react';
+import LibraryIcon from '../../assets/sidebar/library.svg?react';
 import WorkIcon from '../../assets/工作.svg?react';
 import SkillDesignIcon from '../../assets/agent-management/agent-skill.svg?react';
-import AgentDesignIcon from '../../assets/智能体.svg?react';
 import PluginIcon from '../../assets/agent-management/extension.svg?react';
 import type { SidebarNavKey } from '../../utils/frontendPlatform';
 import type { ApplicationPluginContribution, ApplicationPluginNavKey } from '../../applicationPlugins/types';
@@ -41,7 +41,8 @@ interface NavItem {
 
 // "扩展"（连接器市场：插件+MCP）导航图标——和 plugin.svg（Harness 插件管理，纯命名撞车、
 // 业务无关）故意区分开，用网格/市场的视觉隐喻而不是拼图块。
-const connectorMarketNavIcon = (
+// 保留以下三个历史导航图标定义（当前平台配置下已从 mainNavItems 移除引用），供后续恢复使用。
+export const connectorMarketNavIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
     <rect x="3" y="3" width="7" height="7" rx="1.5" strokeLinecap="round" strokeLinejoin="round" />
     <rect x="14" y="3" width="7" height="7" rx="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -50,7 +51,7 @@ const connectorMarketNavIcon = (
   </svg>
 );
 
-const experimentsNavIcon = (
+export const experimentsNavIcon = (
   <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="16.000000" height="16.000000" fill="none">
     <rect id="rsi" width="16.000000" height="16.000000" x="0.000000" y="0.000000" />
     <path
@@ -63,7 +64,7 @@ const experimentsNavIcon = (
 );
 
 // "个人上下文"导航图标——文档/知识库隐喻，内联 SVG 避免引入缺失的图标资源。
-const personalContextNavIcon = (
+export const personalContextNavIcon = (
   <svg viewBox="0 0 16 16" width="16" height="16" fill="none">
     <path
       fillRule="evenodd"
@@ -84,14 +85,12 @@ const personalContextNavIcon = (
 );
 
 const mainNavItems: NavItem[] = [
+  { key: 'home', labelKey: 'nav.home', icon: <HomeIcon aria-hidden /> },
   { key: 'chat', labelKey: 'nav.work', icon: <WorkIcon aria-hidden /> },
-  { key: 'agents', labelKey: 'nav.agent', icon: <AgentDesignIcon aria-hidden /> },
+  { key: 'productLibrary', labelKey: 'nav.productLibrary', icon: <LibraryIcon aria-hidden /> },
+  { key: 'qualificationLibrary', labelKey: 'nav.qualificationLibrary', icon: <LibraryIcon aria-hidden /> },
   { key: 'skills', labelKey: 'nav.skills', icon: <SkillDesignIcon aria-hidden /> },
-  { key: 'connectorMarket', labelKey: 'nav.connectorMarket', icon: connectorMarketNavIcon },
-  { key: 'experiments', labelKey: 'nav.experiments', icon: experimentsNavIcon },
-  { key: 'personalContext', labelKey: 'nav.personalContext', icon: personalContextNavIcon },
   { key: 'settings', labelKey: 'nav.settings', icon: <SettingsIcon aria-hidden /> },
-  { key: 'updatepanel', labelKey: 'nav.update', icon: <UpdateIcon aria-hidden /> },
 ];
 
 export function SessionSidebar({
