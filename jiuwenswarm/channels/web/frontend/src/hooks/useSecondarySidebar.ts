@@ -4,7 +4,8 @@ export type SecondarySidebar = 'chat' | 'experiments' | 'settings';
 const COLLAPSED_KEY = 'jiuwenswarm.secondarySidebarCollapsed';
 
 export function useSecondarySidebarPreference() {
-  const [collapsed, setCollapsed] = useState(() => localStorage.getItem(COLLAPSED_KEY) === 'true');
+  // Tender document scenario: force default expanded, ignoring any localStorage residue.
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(COLLAPSED_KEY, String(collapsed));

@@ -47,6 +47,7 @@ import {
   requestSettingsModule,
   type SettingsModuleTarget,
 } from './features/settings/settingsNavigation';
+import { ADVANCED_NAV_EVENT } from './features/settings/modules/advanced/AdvancedFeaturesModule';
 import { ConnectorMarketPanel } from './components/ConnectorMarket';
 import { LoginDialog } from './components/LoginDialog';
 import { DesignerPage } from './features/designer/components/DesignerPage';
@@ -4028,6 +4029,16 @@ function AppContent({
       setToolPanelHidden,
     ],
   );
+
+  // Settings "advanced features" entries navigate via a custom event.
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const nav = (event as CustomEvent<MainNavKey>).detail;
+      if (nav) handleNavigate(nav);
+    };
+    window.addEventListener(ADVANCED_NAV_EVENT, handler);
+    return () => window.removeEventListener(ADVANCED_NAV_EVENT, handler);
+  }, [handleNavigate]);
 
   const handleNavItemClick = (nav: MainNavKey) => {
     const peekTarget = (

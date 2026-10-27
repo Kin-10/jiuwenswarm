@@ -1,0 +1,21 @@
+.advanced-features__desc {
+  color: var(--color-text-secondary);
+  margin-bottom: 0.75rem;
+}
+.advanced-features__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem;
+}
+.advanced-features__item {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background: var(--color-surface-card);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  text-align: left;
+}
+.advanced-features__item:hover {
+  background: var(--color-surface-hover);
+}

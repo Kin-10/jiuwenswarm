@@ -426,7 +426,11 @@
       "personalContext": "知识",
       "recommendation": "推荐",
       "archivedTasks": "已归档的任务",
-      "experimental": "实验功能"
+      "experimental": "实验功能",
+      "advanced": "高级功能"
+    },
+    "advanced": {
+      "description": "以下功能已收纳到此处，点击即可进入。"
     },
     "feedback": {
       "loadFailed": "设置加载失败",

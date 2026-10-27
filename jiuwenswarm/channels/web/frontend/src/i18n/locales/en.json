@@ -433,7 +433,11 @@
       "personalContext": "Knowledge",
       "recommendation": "Recommendations",
       "archivedTasks": "Archived Tasks",
-      "experimental": "Experimental"
+      "experimental": "Experimental",
+      "advanced": "Advanced"
+    },
+    "advanced": {
+      "description": "These features are grouped here. Click to open."
     },
     "feedback": {
       "loadFailed": "Failed to load settings",

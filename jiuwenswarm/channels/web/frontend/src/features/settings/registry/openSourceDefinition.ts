@@ -10,6 +10,7 @@ import { recommendationModule } from '../modules/recommendation';
 import { archivedTasksModule } from '../modules/archivedTasks';
 import { voiceModule } from '../modules/voice/definition';
 import { experimentalModule } from '../modules/experimental';
+import { advancedModule } from '../modules/advanced';
 
 export const openSourceSettingsPageDefinition = createSettingsPageDefinition({
   id: 'open-source-settings',
@@ -26,6 +27,7 @@ export const openSourceSettingsPageDefinition = createSettingsPageDefinition({
     recommendationModule,
     archivedTasksModule,
     experimentalModule,
+    advancedModule,
   ],
 });
 

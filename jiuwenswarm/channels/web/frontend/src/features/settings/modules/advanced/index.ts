@@ -1,0 +1,1 @@
+export { advancedModule } from './definition';
