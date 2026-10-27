@@ -44,7 +44,10 @@
   },
   "nav": {
     "chat": "Chat",
-    "work": "Tasks",
+    "work": "Bid Workspace",
+    "home": "Home",
+    "productLibrary": "Product Library",
+    "qualificationLibrary": "Qualification Library",
     "agent": "Experts",
     "design": "Design",
     "experiments": "Experiments",
@@ -57,6 +60,12 @@
     "logs": "Logs",
     "update": "Updates",
     "personalContext": "Knowledge"
+  },
+  "tender": {
+    "productLibraryTitle": "Product Library",
+    "qualificationLibraryTitle": "Qualification Library",
+    "placeholderDescription": "Coming soon.",
+    "recycleBin": "Recycle Bin"
   },
   "applicationPlugins": {
     "title": "Application plugins",

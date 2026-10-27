@@ -44,7 +44,10 @@
   },
   "nav": {
     "chat": "对话",
-    "work": "任务",
+    "work": "标书工作区",
+    "home": "首页",
+    "productLibrary": "企业产品库",
+    "qualificationLibrary": "企业资信库",
     "agent": "专家",
     "design": "设计",
     "experiments": "实验",
@@ -57,6 +60,12 @@
     "logs": "日志",
     "update": "更新",
     "personalContext": "知识"
+  },
+  "tender": {
+    "productLibraryTitle": "企业产品库",
+    "qualificationLibraryTitle": "企业资信库",
+    "placeholderDescription": "功能规划中，敬请期待。",
+    "recycleBin": "回收站"
   },
   "applicationPlugins": {
     "title": "应用插件",
