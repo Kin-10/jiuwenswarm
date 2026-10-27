@@ -40,6 +40,9 @@
   --color-skill-card-action-hover-surface: #e4e4e7;
   --color-surface-chrome: rgba(255, 255, 255, 0.95);
   --color-surface-shell: #f3f3f3;
+  /* 标书首页背景网格 */
+  --color-grid-line: #e5e7eb;
+  --color-grid-glow: rgba(99, 102, 241, 0.12);
   --color-surface-transparent: transparent;
 
   /* Text */
