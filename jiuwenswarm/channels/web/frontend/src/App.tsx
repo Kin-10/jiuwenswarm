@@ -213,6 +213,7 @@ import './App.css';
 import { setComfyuiWorkflowEnabled } from './features/designer/comfyuiFeatureConfig';
 import { setTeamOrganizationUiEnabled } from './features/teamOrganization/featureConfig';
 import { organizationOwnerStopTarget } from './features/teamOrganization/conversation';
+import { PlaceholderLibraryPage } from './features/tender/PlaceholderLibraryPage';
 import {
   normalizeTeamBootstrapMode,
   normalizeTeamDispatchMode,
@@ -3983,6 +3984,8 @@ function AppContent({
 
   const handleNavigate = useCallback(
     (nav: MainNavKey, peekTarget: SecondarySidebar | null = null): boolean => {
+      // home 语义 = 回到聊天首页（无会话欢迎页），归一为 chat 走现有空态
+      if (nav === 'home') nav = 'chat';
       if (nav !== 'settings' && !confirmLeaveSettings()) {
         return false;
       }
@@ -4854,6 +4857,16 @@ const showWorkspaceDivider = effectiveTeamAreaExpanded && !showConversationNotFo
                 }
               />
             </div>
+          </div>
+        )}
+        {activeNav === 'productLibrary' && (
+          <div className="app-section">
+            <PlaceholderLibraryPage variant="productLibrary" />
+          </div>
+        )}
+        {activeNav === 'qualificationLibrary' && (
+          <div className="app-section">
+            <PlaceholderLibraryPage variant="qualificationLibrary" />
           </div>
         )}
       </main>
