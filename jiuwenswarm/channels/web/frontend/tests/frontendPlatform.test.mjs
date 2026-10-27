@@ -31,7 +31,23 @@ test('resolveFrontendPlatform uses the first explicit supported source', () => {
   assert.equal(resolveFrontendPlatform('default', 'harmony'), 'harmony');
 });
 
-test('getHiddenNavItemsForPlatform preserves current web behavior and trims Harmony sidebar', () => {
-  assert.deepEqual(getHiddenNavItemsForPlatform('web'), ['sessions']);
-  assert.deepEqual(getHiddenNavItemsForPlatform('harmony'), ['sessions', 'updatepanel', 'connectorMarket', 'experiments']);
+test('getHiddenNavItemsForPlatform hides non-tender entries on web and harmony', () => {
+  assert.deepEqual(getHiddenNavItemsForPlatform('web'), [
+    'sessions',
+    'agents',
+    'connectorMarket',
+    'experiments',
+    'personalContext',
+    'personalContextSettings',
+    'updatepanel',
+  ]);
+  assert.deepEqual(getHiddenNavItemsForPlatform('harmony'), [
+    'sessions',
+    'updatepanel',
+    'connectorMarket',
+    'experiments',
+    'agents',
+    'personalContext',
+    'personalContextSettings',
+  ]);
 });
