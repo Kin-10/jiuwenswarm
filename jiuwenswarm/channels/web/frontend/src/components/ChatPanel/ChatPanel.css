@@ -4211,24 +4211,6 @@
   height: 100%;
   width: 100%;
   padding: 2rem 1.5rem 6rem 1.5rem;
-  background-image:
-    radial-gradient(ellipse 60% 50% at 50% 0%, var(--color-grid-glow), transparent 70%),
-    linear-gradient(var(--color-grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
-  background-size: 100% 100%, 24px 24px, 24px 24px;
-}
-
-.chat-welcome::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--color-grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
-  background-size: 48px 48px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 45%, transparent 30%, #000 100%);
-  mask-image: radial-gradient(ellipse 70% 80% at 50% 45%, transparent 30%, #000 100%);
-  pointer-events: none;
 }
 
 .chat-welcome__composer {
