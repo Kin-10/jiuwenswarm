@@ -48,7 +48,7 @@ const I18N_KEYS = [
   'title', 'subtitle', 'requiredMark', 'autoTitle', 'autoDesc', 'autoFormats',
   'pasteTitle', 'pasteDesc', 'pasteComingSoon', 'history', 'statusParsing',
   'statusDone', 'statusError', 'analyzing', 'emptyResult', 'prevStep',
-  'nextStep', 'nextComingSoon', 'backToChat', 'removeFile',
+  'nextStep', 'nextComingSoon', 'backToChat', 'removeFile', 'resultTitle', 'outputsTitle',
 ];
 
 test('chat.tenderParsing.* keys exist in both zh and en', () => {

@@ -1683,7 +1683,9 @@
       "nextStep": "下一步",
       "nextComingSoon": "后续步骤规划中",
       "backToChat": "返回对话",
-      "removeFile": "删除文件"
+      "removeFile": "删除文件",
+      "resultTitle": "解析结果",
+      "outputsTitle": "解析产物"
     },
     "groupCreateWelcomeBrand": "JiuwenSwarm",
     "groupCreateWelcomeSuffix": "轻松解决工作每个问题！",

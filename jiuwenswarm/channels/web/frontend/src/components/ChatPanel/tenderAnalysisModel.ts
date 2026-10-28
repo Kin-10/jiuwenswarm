@@ -1,7 +1,8 @@
 /**
  * 标书解析结果页的纯数据模型层（设计 D-20261028-2054）：
  * - 契约通道：agent 产物 tender-analysis.json（version 1）。
- * - 兜底通道：最终助手消息的 markdown 已知标题集抽取。
+ * - 兜底通道：最终助手消息按任意 markdown 二级标题切区块，正文原样保留
+ *   （表格/有序列表/加粗等由 MarkdownRenderer 呈现）；无标题时整段单区块兜底。
  * 零 React 依赖，便于 node:test 直测。
  */
 
@@ -10,7 +11,7 @@ import type { ArtifactItem } from '../ArtifactsPanel/artifactCollection';
 
 export type TenderSectionStatus = 'pending' | 'done' | 'error';
 export type TenderParsingStatus = 'parsing' | 'done' | 'error';
-export type TenderBlockType = 'heading' | 'kv' | 'bullets' | 'paragraph';
+export type TenderBlockType = 'heading' | 'kv' | 'bullets' | 'paragraph' | 'markdown';
 
 export interface TenderAnalysisBlock {
   type: TenderBlockType;
@@ -33,10 +34,22 @@ export interface TenderFileInfo {
   size?: number;
 }
 
+/** agent 产出的可下载文件（如完整解析 md），供解析页产物区展示。 */
+export interface TenderOutputFile {
+  id: string;
+  name: string;
+  size?: number;
+  downloadUrl?: string;
+  path?: string;
+}
+
 export interface TenderAnalysisModel {
   file: TenderFileInfo | null;
   status: TenderParsingStatus;
+  /** 兜底通道中首个二级标题前的导语（如“已完成解析，结果如下”）。 */
+  intro?: string;
   sections: TenderAnalysisSection[];
+  outputs: TenderOutputFile[];
   source: 'contract' | 'fallback' | 'none';
 }
 
@@ -58,7 +71,7 @@ export function findTenderContractArtifact(artifacts: ArtifactItem[]): ArtifactI
   return artifacts.find((item) => item.name === TENDER_ANALYSIS_ARTIFACT_NAME && (item.downloadUrl || item.path)) ?? null;
 }
 
-const VALID_BLOCK_TYPES = new Set<TenderBlockType>(['heading', 'kv', 'bullets', 'paragraph']);
+const VALID_BLOCK_TYPES = new Set<TenderBlockType>(['heading', 'kv', 'bullets', 'paragraph', 'markdown']);
 
 export function parseTenderAnalysisContract(
   raw: string,
@@ -113,94 +126,104 @@ export function parseTenderAnalysisContract(
   return { status, file, sections };
 }
 
-/** 兜底通道可识别的 markdown 二级标题集（含常见别名）。 */
-const SECTION_DEFS: Array<{ key: string; title: string; patterns: RegExp[] }> = [
-  { key: 'projectOverview', title: '项目概述', patterns: [/^项目概述$/, /^项目概览$/, /^项目信息$/, /^项目基础信息$/] },
-  { key: 'techScoring', title: '技术部分评分要求', patterns: [/^技术部分评分要求$/, /^技术评分要求$/, /^评分要求$/, /^技术部分$/] },
-  { key: 'businessScoring', title: '商务部分评分要求', patterns: [/^商务部分评分要求$/, /^商务评分要求$/, /^商务部分$/] },
-  { key: 'qualification', title: '资格要求', patterns: [/^资格要求$/, /^资格性审查$/, /^投标人资格要求$/] },
-];
+/**
+ * 兜底通道：按任意 markdown 二级标题（## xxx）切分区块，标题原文保留（含 emoji），
+ * 区块正文原样保留为单个 markdown block（表格/有序列表/加粗由渲染层呈现）。
+ * 无二级标题但有正文时，整体放入 key='fallback-result' 的单区块（标题留空，由视图层配 i18n 文案）。
+ */
+export const FALLBACK_RESULT_SECTION_KEY = 'fallback-result';
 
-export function extractSectionsFromMarkdown(content: string): TenderAnalysisSection[] {
+export function extractSectionsFromMarkdown(content: string): {
+  intro?: string;
+  sections: TenderAnalysisSection[];
+} {
   const sections: TenderAnalysisSection[] = [];
-  let current: TenderAnalysisSection | null = null;
-  let bullets: string[] = [];
+  const introLines: string[] = [];
+  let title: string | null = null;
+  let body: string[] = [];
 
-  const flushBullets = () => {
-    if (current && bullets.length) {
-      current.blocks.push({ type: 'bullets', items: [...bullets] });
+  const flush = () => {
+    if (title !== null) {
+      const markdown = body.join('\n').trim();
+      if (markdown) {
+        sections.push({
+          key: `sec-${sections.length}`,
+          title,
+          required: false,
+          status: 'done',
+          blocks: [{ type: 'markdown', text: markdown }],
+        });
+      }
     }
-    bullets = [];
-  };
-  const flushSection = () => {
-    flushBullets();
-    if (current && current.blocks.length) {
-      current.status = 'done';
-      sections.push(current);
-    }
-    current = null;
+    title = null;
+    body = [];
   };
 
-  for (const rawLine of content.split('\n')) {
-    const line = rawLine.trimEnd();
+  for (const line of content.split('\n')) {
     const h2 = /^##\s+(.+?)\s*$/.exec(line);
     if (h2) {
-      flushSection();
-      const heading = h2[1].replace(/\*/g, '').trim();
-      const def = SECTION_DEFS.find((d) => d.patterns.some((p) => p.test(heading)));
-      current = def ? { key: def.key, title: def.title, required: true, status: 'pending', blocks: [] } : null;
+      flush();
+      title = h2[1].replace(/\*/g, '').trim();
       continue;
     }
-    if (!current) continue;
-    const h3 = /^###\s+(.+?)\s*$/.exec(line);
-    if (h3) {
-      flushBullets();
-      current.blocks.push({ type: 'heading', text: h3[1].trim() });
-      continue;
-    }
-    const bullet = /^(?:[-*•])\s+(.+)$/.exec(line.trim());
-    if (bullet) {
-      const bulletKv = /^(?:\*\*(.+?)\*\*|([^：:]+?))[：:]\s*(.+)$/.exec(bullet[1].trim());
-      if (bulletKv) {
-        flushBullets();
-        current.blocks.push({ type: 'kv', label: (bulletKv[1] ?? bulletKv[2]).trim(), value: bulletKv[3].trim() });
-      } else {
-        bullets.push(bullet[1].trim());
-      }
-      continue;
-    }
-    const kv = /^(?:\*\*(.+?)\*\*|([^：:]+?))[：:]\s*(.+)$/.exec(line.trim());
-    if (kv) {
-      flushBullets();
-      current.blocks.push({ type: 'kv', label: (kv[1] ?? kv[2]).trim(), value: kv[3].trim() });
-      continue;
-    }
-    if (line.trim()) {
-      flushBullets();
-      current.blocks.push({ type: 'paragraph', text: line.trim() });
+    if (title === null) {
+      introLines.push(line);
+    } else {
+      body.push(line);
     }
   }
-  flushSection();
-  return sections;
+  flush();
+
+  const intro = introLines.join('\n').trim();
+  if (!sections.length && content.trim()) {
+    return {
+      sections: [
+        {
+          key: FALLBACK_RESULT_SECTION_KEY,
+          title: '',
+          required: false,
+          status: 'done',
+          blocks: [{ type: 'markdown', text: content.trim() }],
+        },
+      ],
+    };
+  }
+  return { intro: intro || undefined, sections };
 }
 
 export function buildTenderAnalysisModel(input: {
   messages: Message[];
+  artifacts: ArtifactItem[];
   contractRaw: string | null;
 }): TenderAnalysisModel {
   const fallbackFile = findTenderFileInfo(input.messages);
+  const outputs: TenderOutputFile[] = input.artifacts.map((artifact) => ({
+    id: artifact.id,
+    name: artifact.name,
+    size: artifact.size,
+    downloadUrl: artifact.downloadUrl,
+    path: artifact.path,
+  }));
   if (input.contractRaw) {
     const contract = parseTenderAnalysisContract(input.contractRaw);
     if (contract) {
-      return { file: contract.file ?? fallbackFile, status: contract.status, sections: contract.sections, source: 'contract' };
+      return {
+        file: contract.file ?? fallbackFile,
+        status: contract.status,
+        sections: contract.sections,
+        outputs,
+        source: 'contract',
+      };
     }
   }
   const lastSettledAssistant = [...input.messages]
     .reverse()
     .find((m) => m.role === 'assistant' && !m.isStreaming && m.content.trim());
-  const sections = lastSettledAssistant ? extractSectionsFromMarkdown(lastSettledAssistant.content) : [];
+  const { intro, sections } = lastSettledAssistant
+    ? extractSectionsFromMarkdown(lastSettledAssistant.content)
+    : { sections: [] as TenderAnalysisSection[] };
   if (sections.length) {
-    return { file: fallbackFile, status: 'done', sections, source: 'fallback' };
+    return { file: fallbackFile, status: 'done', intro, sections, outputs, source: 'fallback' };
   }
-  return { file: fallbackFile, status: 'parsing', sections: [], source: 'none' };
+  return { file: fallbackFile, status: 'parsing', sections: [], outputs, source: 'none' };
 }

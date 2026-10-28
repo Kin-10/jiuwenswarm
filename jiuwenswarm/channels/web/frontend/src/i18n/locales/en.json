@@ -1699,7 +1699,9 @@
       "nextStep": "Next",
       "nextComingSoon": "More steps coming soon",
       "backToChat": "Back to chat",
-      "removeFile": "Remove file"
+      "removeFile": "Remove file",
+      "resultTitle": "Parsing Result",
+      "outputsTitle": "Parsed files"
     },
     "groupCreateWelcomeBrand": "JiuwenSwarm",
     "groupCreateWelcomeSuffix": "makes every work problem easier!",

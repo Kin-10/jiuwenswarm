@@ -18,7 +18,13 @@ import {
   UploadCloud,
 } from 'lucide-react';
 import { FileIcon } from '../FileIcon';
-import type { TenderAnalysisModel, TenderAnalysisSection } from './tenderAnalysisModel';
+import { MarkdownRenderer } from '../MarkdownRenderer';
+import { artifactDownloadUrl } from '../ArtifactsPanel/filePreviewModel';
+import {
+  FALLBACK_RESULT_SECTION_KEY,
+  type TenderAnalysisModel,
+  type TenderAnalysisSection,
+} from './tenderAnalysisModel';
 import './TenderParsingView.css';
 
 interface TenderParsingViewProps {
@@ -44,7 +50,9 @@ function SectionCard({ section }: { section: TenderAnalysisSection }) {
     >
       <header className="tender-parsing-section__header">
         <h3 className="tender-parsing-section__title">
-          {section.title}
+          {section.key === FALLBACK_RESULT_SECTION_KEY
+            ? t('chat.tenderParsing.resultTitle')
+            : section.title}
           {section.required && <span className="tender-parsing-required">{t('chat.tenderParsing.requiredMark')}</span>}
         </h3>
         {section.status === 'done' && (
@@ -60,6 +68,16 @@ function SectionCard({ section }: { section: TenderAnalysisSection }) {
           </div>
         )}
         {section.blocks.map((block, index) => {
+          if (block.type === 'markdown') {
+            return (
+              <MarkdownRenderer
+                key={index}
+                content={block.text ?? ''}
+                className="tender-parsing-block-markdown chat-markdown"
+                testId={`chat-tender-parsing-markdown-${section.key}`}
+              />
+            );
+          }
           if (block.type === 'heading') {
             return (
               <h4 key={index} className="tender-parsing-block-heading">
@@ -178,6 +196,43 @@ export function TenderParsingView({ model, onBack, onReset }: TenderParsingViewP
             <Trash2 size={16} aria-hidden="true" />
           </button>
         </div>
+      )}
+
+      {model.outputs.length > 0 && (
+        <div className="tender-parsing-outputs" data-testid="chat-tender-parsing-outputs">
+          <span className="tender-parsing-outputs__label">{t('chat.tenderParsing.outputsTitle')}</span>
+          {model.outputs.map((output) => {
+            const href = artifactDownloadUrl(output);
+            return href ? (
+              <a
+                key={output.id}
+                className="tender-parsing-output"
+                href={href}
+                download={output.name}
+                data-testid={`chat-tender-parsing-output-${output.id}`}
+              >
+                <FileIcon fileName={output.name} size={16} />
+                <span className="tender-parsing-output__name">{output.name}</span>
+                {formatFileSize(output.size) && (
+                  <span className="tender-parsing-output__size">{formatFileSize(output.size)}</span>
+                )}
+              </a>
+            ) : (
+              <span key={output.id} className="tender-parsing-output" data-testid={`chat-tender-parsing-output-${output.id}`}>
+                <FileIcon fileName={output.name} size={16} />
+                <span className="tender-parsing-output__name">{output.name}</span>
+              </span>
+            );
+          })}
+        </div>
+      )}
+
+      {model.intro && (
+        <MarkdownRenderer
+          content={model.intro}
+          className="tender-parsing-intro chat-markdown"
+          testId="chat-tender-parsing-intro"
+        />
       )}
 
       {model.sections.length > 0 ? (

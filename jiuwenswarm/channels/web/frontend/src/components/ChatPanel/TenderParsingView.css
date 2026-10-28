@@ -347,3 +347,57 @@
     transform: rotate(360deg);
   }
 }
+
+.tender-parsing-outputs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tender-parsing-outputs__label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.tender-parsing-output {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background: var(--color-surface-card);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+a.tender-parsing-output:hover {
+  border-color: var(--color-action-primary);
+  color: var(--color-action-primary);
+}
+
+.tender-parsing-output__name {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tender-parsing-output__size {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.tender-parsing-intro {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.tender-parsing-block-markdown {
+  font-size: 13px;
+  line-height: 1.7;
+}

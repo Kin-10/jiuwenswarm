@@ -48,5 +48,8 @@ export function useTenderAnalysis(active: boolean): TenderAnalysisModel {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- contractKey 已涵盖 contractArtifact 的内容版本
   }, [active, contractKey]);
 
-  return useMemo(() => buildTenderAnalysisModel({ messages, contractRaw }), [messages, contractRaw]);
+  return useMemo(
+    () => buildTenderAnalysisModel({ messages, artifacts, contractRaw }),
+    [messages, artifacts, contractRaw],
+  );
 }
