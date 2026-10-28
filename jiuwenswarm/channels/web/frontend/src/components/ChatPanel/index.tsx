@@ -50,6 +50,7 @@ import ChatOverviewIcon from '../../assets/chat-overview.svg?react';
 import PanelCollapseIcon from '../../assets/panel-collapse.svg?react';
 import lineUpIcon from '../../assets/lineUp.svg';
 import tenderMascot from '../../assets/tender-mascot.png';
+import tenderMascotVideo from '../../assets/tender-mascot.mp4';
 import homeBanner from '../../assets/home-banner.svg';
 import { NEW_CONVERSATION_ID } from '../../multi-session/state/newConversationLifecycle';
 import loadSendIcon from '../../assets/load-send.svg';
@@ -1145,7 +1146,7 @@ function BeeBanner({
   onTrigger: () => void;
   onLeave: () => void;
 }) {
-  const [, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = useCallback(() => {
@@ -1160,11 +1161,36 @@ function BeeBanner({
     }, BEE_ANIMATION_DURATION);
   }, [onTrigger]);
 
+  const handleMouseLeave = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    setIsPlaying(false);
+    onLeave();
+  }, [onLeave]);
+
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
+
+  if (isPlaying) {
+    return (
+      <video
+        className={className}
+        src={tenderMascotVideo}
+        autoPlay
+        muted
+        loop
+        playsInline
+        data-testid="chat-panel-welcome-banner"
+        onMouseLeave={handleMouseLeave}
+        aria-label={altText}
+      />
+    );
+  }
 
   return (
     <img
@@ -1173,7 +1199,7 @@ function BeeBanner({
       alt={altText}
       data-testid="chat-panel-welcome-banner"
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={onLeave}
+      onMouseLeave={handleMouseLeave}
     />
   );
 }
