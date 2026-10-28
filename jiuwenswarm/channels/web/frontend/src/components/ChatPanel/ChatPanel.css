@@ -245,26 +245,6 @@
   width: 100%;
 }
 
-/* Tender upload cards live inside the composer body: cards on the left
-   column, the original input content stacks in the right column. */
-.chat-input-body--with-tender-cards {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  column-gap: 8px;
-  align-items: stretch;
-}
-
-.chat-input-body--with-tender-cards > .tender-upload-cards {
-  grid-column: 1;
-  grid-row: 1 / span 8;
-  margin: 12px 0 12px 12px;
-}
-
-.chat-input-body--with-tender-cards > *:not(.tender-upload-cards) {
-  grid-column: 2;
-  min-width: 0;
-}
-
 .chat-input-compact-progress {
   display: flex;
   align-items: center;
