@@ -46,6 +46,8 @@ import { useAgentGroupVisualIdentity } from '../../features/agentManagement/useA
 import { MessageList } from './MessageList';
 import { ContextCompressionLines } from './MessageItem';
 import { InputArea, type InputAreaHandle } from './InputArea';
+import { TenderParsingView } from './TenderParsingView';
+import { useTenderAnalysis } from './useTenderAnalysis';
 import ChatOverviewIcon from '../../assets/chat-overview.svg?react';
 import PanelCollapseIcon from '../../assets/panel-collapse.svg?react';
 import lineUpIcon from '../../assets/lineUp.svg';
@@ -1445,6 +1447,12 @@ export const ChatPanel = React.memo(function ChatPanel({
   const shouldShowShareExport = Boolean(onExportShare);
   const shouldShowHumanShare = mode === 'team' && teamHumanShareCommands.length > 0;
   const [humanShareOpen, setHumanShareOpen] = React.useState(false);
+  // 标书解析页：提交含 document 附件的消息后，主区从消息流切换为解析结果页（设计 D-20261028-2054）。
+  const [tenderParsingOpen, setTenderParsingOpen] = useState(false);
+  const tenderAnalysis = useTenderAnalysis(tenderParsingOpen);
+  useEffect(() => {
+    setTenderParsingOpen(false);
+  }, [activeSessionId]);
   const isAuthorized = useAuthStore((state) => state.islogin);
   const [bubbleVisible, setBubbleVisible] = useState(false);
   const [freeModelsPromptDismissed, setFreeModelsPromptDismissed] = useState(false);
@@ -2257,6 +2265,9 @@ export const ChatPanel = React.memo(function ChatPanel({
 
   const handleSendMessage = useCallback(
     async (content: string, mediaItems?: MediaItem[], options?: ChatSendOptions | ChatInputProvenance) => {
+      if (mediaItems?.some((item) => item.type === 'document')) {
+        setTenderParsingOpen(true);
+      }
       if (options && 'queuedTaskId' in options) {
         if (activeSessionId) await flushApplicationConversationHistory(activeSessionId);
         setIsSending(true);
@@ -2783,6 +2794,7 @@ export const ChatPanel = React.memo(function ChatPanel({
         data-testid="chat-panel-scroll"
         onScroll={handleScroll}
         onWheel={handleWheel}
+        style={tenderParsingOpen ? { display: 'none' } : undefined}
       >
         <div className={chatContentClassName} data-testid="chat-panel-content">
           {hasConversation ? (
@@ -3011,6 +3023,14 @@ export const ChatPanel = React.memo(function ChatPanel({
           <div />
         </div>
       </div>
+
+      {tenderParsingOpen && (
+        <TenderParsingView
+          model={tenderAnalysis}
+          onBack={() => setTenderParsingOpen(false)}
+          onReset={() => setTenderParsingOpen(false)}
+        />
+      )}
 
       {hasConversation && (
         <div ref={composeRef} className="chat-compose" data-testid="chat-panel-compose">
