@@ -1930,6 +1930,14 @@
       "filePickerUnsupported": "Cannot open local file picker in this environment (please ensure jiuwenswarm is running locally and restarted with the latest backend)",
       "filePickerFailed": "Failed to open file picker"
     },
+    "tenderUpload": {
+      "tenderFile": "Tender Document",
+      "listFile": "List File",
+      "relatedCase": "Related Cases",
+      "other": "Other",
+      "required": "Required",
+      "tenderFileRequired": "Please upload the tender document before sending"
+    },
     "uploading": "Uploading...",
     "uploadFailed": "Upload failed",
     "retry": "Retry",

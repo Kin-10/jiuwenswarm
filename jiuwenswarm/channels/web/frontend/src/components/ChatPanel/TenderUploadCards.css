@@ -1,0 +1,100 @@
+.tender-upload-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 4px 8px;
+}
+
+.tender-upload-card {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px dashed var(--color-border-default);
+  border-radius: 10px;
+  background: var(--color-surface-card);
+  overflow: hidden;
+}
+
+.tender-upload-card--filled {
+  border-style: solid;
+}
+
+.tender-upload-card--disabled {
+  opacity: 0.6;
+}
+
+.tender-upload-card-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0 6px;
+  border-radius: 0 9px 0 8px;
+  background: var(--color-feedback-danger);
+  color: var(--color-feedback-danger-text);
+  font-size: 10px;
+  line-height: 16px;
+  pointer-events: none;
+}
+
+.tender-upload-card-add {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.tender-upload-card-add:hover:not(:disabled) {
+  color: var(--color-text-primary);
+}
+
+.tender-upload-card-add:disabled {
+  cursor: not-allowed;
+}
+
+.tender-upload-card-filename {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.tender-upload-card-remove {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-action-secondary);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.tender-upload-card-remove:hover:not(:disabled) {
+  color: var(--color-feedback-danger);
+}
+
+.tender-upload-card-remove:disabled {
+  cursor: not-allowed;
+}

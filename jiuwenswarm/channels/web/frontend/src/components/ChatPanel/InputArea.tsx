@@ -92,6 +92,12 @@ import { ExtensionPickerPanel } from './ExtensionPickerPanel';
 import { SkillPickerPanel } from './SkillPickerPanel';
 import { PickerPanel } from './PickerPanel';
 import { PickerSearchInput } from './PickerSearchInput';
+import {
+  TenderUploadCards,
+  EMPTY_TENDER_CATEGORY_FILES,
+  type TenderUploadCategory,
+  type TenderUploadCategoryFiles,
+} from './TenderUploadCards';
 import { Switch } from '../Switch';
 import { Button, CloseButton, Dialog, Input } from '../ui';
 import { Select } from '../ui/Select/Select';
@@ -515,6 +521,8 @@ interface AttachmentDraft {
   localPath?: string;
   /** 用户在卡片上给这个文件起的素材名（之后可用 @名称 引用）；没改过就用文件名。 */
   assetName?: string;
+  /** 标书分类上传卡片给附件打的类别标签（招标文件/清单文件/相关案例/其他）。 */
+  tenderCategory?: TenderUploadCategory;
 }
 
 // ChatPanel/InputArea is unmounted when navigating between some conversation
@@ -2013,7 +2021,7 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
   );
 
   const appendAttachmentFiles = useCallback(
-    (files: FileList | File[]) => {
+    (files: FileList | File[], tenderCategory?: TenderUploadCategory) => {
       const selectedFiles = Array.from(files);
       if (!selectedFiles.length) return;
 
@@ -2053,6 +2061,7 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
           size: file.size,
           file,
           ...(localPath ? { localPath } : {}),
+          ...(tenderCategory ? { tenderCategory } : {}),
         };
         const validationError =
           kind === 'document'
@@ -2088,7 +2097,7 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
   );
 
   const appendLocalFilePicks = useCallback(
-    (picks: LocalFilePick[]) => {
+    (picks: LocalFilePick[], tenderCategory?: TenderUploadCategory) => {
       if (!picks.length) return;
 
       const remaining = MAX_ATTACHMENT_COUNT - attachments.length;
@@ -2148,6 +2157,7 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
           size: pick.size,
           localPath: pick.path,
           status: 'uploading',
+          ...(tenderCategory ? { tenderCategory } : {}),
           ...(pick.kind === 'image' && pick.base64
             ? {
                 base64Data: pick.base64,
@@ -2205,6 +2215,93 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
       appendLocalFilePicks(picks);
     },
     [appendLocalFilePicks, imageInputDisabled, pushAttachmentAlert, t],
+  );
+
+  // 标书分类上传卡片：类别标签直接打在附件 draft 上，卡片展示态从 attachments 推导，
+  // 这样无论从卡片还是附件面板删除，两边都自动保持一致。
+  const tenderCategoryFiles = useMemo<TenderUploadCategoryFiles>(() => {
+    const files: TenderUploadCategoryFiles = { ...EMPTY_TENDER_CATEGORY_FILES };
+    for (const attachment of attachments) {
+      if (attachment.tenderCategory && !files[attachment.tenderCategory]) {
+        files[attachment.tenderCategory] = attachment.filename;
+      }
+    }
+    return files;
+  }, [attachments]);
+
+  const removeTenderCategoryDraft = useCallback(
+    (category: TenderUploadCategory) => {
+      const existing = attachmentsRef.current.find((item) => item.tenderCategory === category);
+      if (existing) removeAttachment(existing.id);
+    },
+    [removeAttachment],
+  );
+
+  const tenderFileInputRef = useRef<HTMLInputElement>(null);
+  const [tenderPickerCategory, setTenderPickerCategory] = useState<TenderUploadCategory | null>(null);
+
+  const handleTenderUpload = useCallback(
+    async (category: TenderUploadCategory) => {
+      if (imageInputDisabled) {
+        pushAttachmentAlert(t('chat.addFileDisabled'));
+        return;
+      }
+      // 浏览器环境没有本机文件选择器，走隐藏 input（与 openAttachmentPicker 同一回退路径）。
+      if (!isDesktopBridgeReady && !isDesktopLocalFilePicker()) {
+        if (tenderFileInputRef.current) {
+          setTenderPickerCategory(category);
+          tenderFileInputRef.current.click();
+        } else {
+          pushAttachmentAlert(t('chat.inputAttachment.filePickerFailed'));
+        }
+        return;
+      }
+      if (!isDesktopLocalFilePicker()) {
+        pushAttachmentAlert(t('chat.inputAttachment.filePickerFailed'));
+        return;
+      }
+      const result = await selectLocalFiles(false);
+      if (result.ok) {
+        const pick = result.files[0];
+        if (!pick) return;
+        removeTenderCategoryDraft(category);
+        appendLocalFilePicks([pick], category);
+        return;
+      }
+      if (result.reason === 'cancelled') {
+        return;
+      }
+      pushAttachmentAlert(t('chat.inputAttachment.filePickerFailed'));
+    },
+    [
+      appendLocalFilePicks,
+      imageInputDisabled,
+      isDesktopBridgeReady,
+      pushAttachmentAlert,
+      removeTenderCategoryDraft,
+      t,
+    ],
+  );
+
+  const handleTenderRemove = useCallback(
+    (category: TenderUploadCategory) => {
+      removeTenderCategoryDraft(category);
+    },
+    [removeTenderCategoryDraft],
+  );
+
+  const handleTenderFileInputChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const category = tenderPickerCategory;
+      const files = event.target.files;
+      if (category && files && files.length) {
+        removeTenderCategoryDraft(category);
+        appendAttachmentFiles(Array.from(files).slice(0, 1), category);
+      }
+      event.target.value = '';
+      setTenderPickerCategory(null);
+    },
+    [appendAttachmentFiles, removeTenderCategoryDraft, tenderPickerCategory],
   );
 
   useImperativeHandle(
@@ -2642,6 +2739,11 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
         return;
       }
     }
+    // 标书场景必传校验：招标文件未上传时阻止提交（斜杠控制命令不受影响）。
+    if (!tenderCategoryFiles.tenderFile) {
+      pushAttachmentAlert(t('chat.tenderUpload.tenderFileRequired'));
+      return;
+    }
     const readyDrafts = attachments.filter(
       (attachment) =>
         attachment.status === 'ready' &&
@@ -2774,6 +2876,7 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
     pushAttachmentAlert,
     releaseUnsentUploads,
     selectedSkills,
+    tenderCategoryFiles,
     t,
   ]);
 
@@ -3833,6 +3936,20 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
           attachmentAlertPortalTarget,
         )}
       <div ref={composerFrameRef} className="chat-input-frame" data-testid="chat-panel-input-frame">
+        <TenderUploadCards
+          categories={tenderCategoryFiles}
+          onUpload={(category) => void handleTenderUpload(category)}
+          onRemove={handleTenderRemove}
+          disabled={composerDisabled}
+        />
+        <input
+          ref={tenderFileInputRef}
+          type="file"
+          accept={ATTACHMENT_ACCEPT}
+          className="hidden"
+          data-testid="chat-tender-upload-file-input"
+          onChange={handleTenderFileInputChange}
+        />
         {isCompactRunning && (
           <div
             className="chat-input-compact-progress"
