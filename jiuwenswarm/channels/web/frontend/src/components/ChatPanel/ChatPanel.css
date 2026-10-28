@@ -4235,7 +4235,7 @@
 
 .chat-welcome__composer {
   position: relative;
-  width: min(100%, 1024px);
+  width: min(100%, 768px);
   margin-bottom: 1.25rem;
 }
 
@@ -4401,7 +4401,7 @@
 }
 
 .chat-welcome__composer {
-  width: min(100%, 1024px);
+  width: min(100%, 768px);
   margin-bottom: 1.25rem;
 }
 
@@ -4435,7 +4435,7 @@
 
 .chat-welcome--group-create .chat-welcome__composer {
   align-self: flex-start;
-  width: min(1032px, calc(100% + 8px));
+  width: min(776px, calc(100% + 8px));
   max-width: none;
   margin-bottom: 24px;
 }
@@ -4451,7 +4451,7 @@
   flex-wrap: wrap;
   gap: 24px;
   align-self: flex-start;
-  width: min(1032px, calc(100% + 8px));
+  width: min(776px, calc(100% + 8px));
   max-width: none;
 }
 
@@ -4505,7 +4505,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
-  width: min(100%, 1024px);
+  width: min(100%, 768px);
   /* Below the composer, which already keeps its own bottom margin. */
   margin-top: 0;
   margin-bottom: 0;
