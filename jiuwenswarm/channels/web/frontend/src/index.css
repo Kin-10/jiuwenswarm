@@ -1391,7 +1391,7 @@ body.workspace-resize-active iframe {
 
   /* Chat compose wrapper */
   .chat-compose {
-    width: 1024px;
+    width: 816px;
     max-width: calc(100% - 48px);
     margin-inline: auto;
     padding-top: 4px;
@@ -1432,7 +1432,7 @@ body.workspace-resize-active iframe {
     }
 
     .chat-panel-shell--team-floating .chat-compose {
-      width: calc(1024px + 364px);
+      width: calc(816px + 364px);
       padding-right: 364px;
     }
 
