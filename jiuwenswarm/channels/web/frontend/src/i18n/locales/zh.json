@@ -1661,6 +1661,8 @@
       "claim": "去领取"
     },
     "welcomeHeading": "你好，这里是AI标书系统",
+    "welcomeHeadingBrand": "用AI，",
+    "welcomeHeadingSuffix": "撰写有态度的标书",
     "groupCreateWelcomeBrand": "JiuwenSwarm",
     "groupCreateWelcomeSuffix": "轻松解决工作每个问题！",
     "groupCreateBannerAlt": "JiuwenSwarm 专家团创建",

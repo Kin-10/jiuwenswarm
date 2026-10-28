@@ -1677,6 +1677,8 @@
       "claim": "Claim now"
     },
     "welcomeHeading": "Hi, this is the AI Bid System.",
+    "welcomeHeadingBrand": "Use AI, ",
+    "welcomeHeadingSuffix": "write bids with attitude.",
     "groupCreateWelcomeBrand": "JiuwenSwarm",
     "groupCreateWelcomeSuffix": "makes every work problem easier!",
     "groupCreateBannerAlt": "JiuwenSwarm Expert Team creation",
