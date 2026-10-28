@@ -15,7 +15,40 @@ export type SidebarNavKey =
   | 'experiments'
   | 'home'
   | 'productLibrary'
-  | 'qualificationLibrary';
+  | 'qualificationLibrary'
+  | 'tenderWrite'
+  | 'tenderRead'
+  | 'dupCheck'
+  | 'blindClean'
+  | 'creativeCenter'
+  | 'library'
+  | 'myBids'
+  | 'businessBid'
+  | 'bidNews'
+  | 'bidWriting'
+  | 'tenderReading'
+  | 'bidDuplicateCheck'
+  | 'bidCleaning'
+  | 'creationCenter'
+  | 'resourceLibrary'
+  | 'businessBidAssistant'
+  | 'bidOpportunities';
+
+/**
+ * 标书域主导航（宽单列侧边栏）的 9 个入口，全部指向占位页。
+ * SessionSidebar 主导航与 App 主区占位页分支共用同一份顺序。
+ */
+export const TENDER_PLACEHOLDER_NAV_KEYS: readonly SidebarNavKey[] = [
+  'bidWriting',
+  'tenderReading',
+  'bidDuplicateCheck',
+  'bidCleaning',
+  'creationCenter',
+  'resourceLibrary',
+  'myBids',
+  'businessBidAssistant',
+  'bidOpportunities',
+];
 
 export const DEFAULT_FRONTEND_PLATFORM: FrontendPlatform = 'web';
 

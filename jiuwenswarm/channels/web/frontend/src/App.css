@@ -28,7 +28,7 @@
 }
 
 /* 全局会话栏 peek 宿主（非会话/定时任务页 hover chat 图标时挂载）：
-   fixed 对齐内容区左缘（跟随 shell 导航列宽，icon-rail 形态为 72px），
+   fixed 对齐内容区左缘（跟随 shell 导航列宽，宽单列形态为 232px），
    容器不拦截指针（页面可正常交互），仅侧栏本身可交互 */
 .chat-layout--peek-host {
   position: fixed;
@@ -42,7 +42,7 @@
 
 .shell--icon-rail .chat-layout--peek-host,
 .shell--agent-management .chat-layout--peek-host {
-  left: 72px;
+  left: 232px;
 }
 
 .chat-layout--peek-host .conversation-sidebar,

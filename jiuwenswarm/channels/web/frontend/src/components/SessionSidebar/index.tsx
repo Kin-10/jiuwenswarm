@@ -1,19 +1,12 @@
 /**
  * SessionSidebar Component
  *
- * Redesigned sidebar with logo and navigation.
+ * Wide single-column text navigation sidebar (232px), tender product layout.
+ * 结构：品牌区 → 主导航 9 个标书域入口 → 弹性留白 → 分割线 → 辅助项 → 企业版卡片。
  */
 
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import './SessionSidebar.css';
-import PlusIcon from '../../assets/sidebar/plus.svg?react';
-import logoIcon from '/logo.svg';
-import SettingsIcon from '../../assets/settings/app-navigation/settings.svg?react';
-import HomeIcon from '../../assets/sidebar/home.svg?react';
-import LibraryIcon from '../../assets/sidebar/library.svg?react';
-import WorkIcon from '../../assets/工作.svg?react';
-import SkillDesignIcon from '../../assets/agent-management/agent-skill.svg?react';
 import PluginIcon from '../../assets/agent-management/extension.svg?react';
 import type { SidebarNavKey } from '../../utils/frontendPlatform';
 import type { ApplicationPluginContribution, ApplicationPluginNavKey } from '../../applicationPlugins/types';
@@ -23,6 +16,7 @@ type MainNavKey = SidebarNavKey | 'connectorMarket' | ApplicationPluginNavKey;
 interface SessionSidebarProps {
   activeNav: MainNavKey;
   onNavigate: (nav: MainNavKey) => void;
+  /** 宽单列布局不再渲染「新建」按钮区；保留 prop 以兼容外部调用方。 */
   onNewSession?: () => void;
   showNewSession?: boolean;
   hiddenNavItems?: MainNavKey[];
@@ -84,33 +78,104 @@ export const personalContextNavIcon = (
   </svg>
 );
 
+// 标书主导航图标：统一 24 viewBox、stroke=currentColor，随选中态切换颜色。
+const bidWritingIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 20h9" />
+    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+  </svg>
+);
+
+const tenderReadingIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <path d="M14 2v6h6" />
+    <circle cx="11.5" cy="14.5" r="2.5" />
+    <path d="M13.3 16.3 15 18" />
+  </svg>
+);
+
+const bidDuplicateCheckIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <rect x="9" y="9" width="13" height="13" rx="2" />
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+  </svg>
+);
+
+const bidCleaningIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
+const creationCenterIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);
+
+const resourceLibraryIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
+const myBidsIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
+const businessBidAssistantIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="7" width="20" height="14" rx="2" />
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+  </svg>
+);
+
+const bidOpportunitiesIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+const productDocsIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <path d="M14 2v6h6" />
+    <path d="M16 13H8" />
+    <path d="M16 17H8" />
+  </svg>
+);
+
+const collapseIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="15 18 9 12 15 6" />
+  </svg>
+);
+
 const mainNavItems: NavItem[] = [
-  { key: 'home', labelKey: 'nav.home', icon: <HomeIcon aria-hidden /> },
-  { key: 'chat', labelKey: 'nav.work', icon: <WorkIcon aria-hidden /> },
-  { key: 'productLibrary', labelKey: 'nav.productLibrary', icon: <LibraryIcon aria-hidden /> },
-  { key: 'qualificationLibrary', labelKey: 'nav.qualificationLibrary', icon: <LibraryIcon aria-hidden /> },
-  { key: 'skills', labelKey: 'nav.skills', icon: <SkillDesignIcon aria-hidden /> },
-  { key: 'settings', labelKey: 'nav.settings', icon: <SettingsIcon aria-hidden /> },
+  { key: 'bidWriting', labelKey: 'nav.bidWriting', icon: bidWritingIcon },
+  { key: 'tenderReading', labelKey: 'nav.tenderReading', icon: tenderReadingIcon },
+  { key: 'bidDuplicateCheck', labelKey: 'nav.bidDuplicateCheck', icon: bidDuplicateCheckIcon },
+  { key: 'bidCleaning', labelKey: 'nav.bidCleaning', icon: bidCleaningIcon },
+  { key: 'creationCenter', labelKey: 'nav.creationCenter', icon: creationCenterIcon },
+  { key: 'resourceLibrary', labelKey: 'nav.resourceLibrary', icon: resourceLibraryIcon },
+  { key: 'myBids', labelKey: 'nav.myBids', icon: myBidsIcon },
+  { key: 'businessBidAssistant', labelKey: 'nav.businessBidAssistant', icon: businessBidAssistantIcon },
+  { key: 'bidOpportunities', labelKey: 'nav.bidOpportunities', icon: bidOpportunitiesIcon },
 ];
 
 export function SessionSidebar({
   activeNav,
   onNavigate,
-  onNewSession,
-  showNewSession = true,
   hiddenNavItems = [],
   applicationPlugins = [],
   onNavItemHover,
   onNavItemPointerDownCapture,
 }: SessionSidebarProps) {
   const { t } = useTranslation();
-
-  const handleNewSession = useCallback(() => {
-    onNavigate('chat');
-    if (onNewSession) {
-      onNewSession();
-    }
-  }, [onNavigate, onNewSession]);
 
   const handleNavClick = (nav: MainNavKey) => {
     onNavigate(nav);
@@ -128,51 +193,70 @@ export function SessionSidebar({
   const visibleMainNavItems = [...mainNavItems, ...applicationPluginItems].filter(
     (item) => !hiddenNavItems.includes(item.key),
   );
-  // 定时任务（cron）是"任务"区内与会话同级的视图，没有独立的导航图标，
-  // 因此进入定时任务时"任务"导航项也应保持选中态
-  const isNavItemActive = (item: NavItem) => activeNav === item.key || (item.key === 'chat' && activeNav === 'cron');
+  const isNavItemActive = (item: NavItem) => activeNav === item.key;
 
   return (
     <aside className="sidebar sidebar--icon-rail" data-testid="session-sidebar-rail">
-      <div className="icon-rail-logo" data-testid="session-sidebar-logo">
-        <img src={logoIcon} alt="Logo" width="28" height="28" />
+      <div className="sidebar-brand" data-testid="session-sidebar-logo">
+        <span className="sidebar-brand__icon" aria-hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <path d="M14 2v6h6" />
+            <path d="M9 13h6" />
+            <path d="M9 17h6" />
+          </svg>
+        </span>
+        <span className="sidebar-brand__name">{t('tender.brandName')}</span>
       </div>
 
-      {showNewSession && (
-        <button
-          className="icon-rail-nav-item"
-          onClick={handleNewSession}
-          data-testid="session-sidebar-new-session-button"
-        >
-          <span className="icon-rail-nav-item__icon">
-            <PlusIcon aria-hidden width="16" height="16" />
-          </span>
-          <span className="icon-rail-nav-item__label">{t('chat.newSession')}</span>
-        </button>
-      )}
-
-      {visibleMainNavItems.map((item) => (
-        <button
-          key={item.key}
-          className={`icon-rail-nav-item${isNavItemActive(item) ? ' icon-rail-nav-item--active' : ''}`}
-          onClick={() => handleNavClick(item.key)}
-          onPointerDownCapture={() => onNavItemPointerDownCapture?.(item.key)}
-          onMouseEnter={() => onNavItemHover?.(item.key)}
-          onMouseLeave={() => onNavItemHover?.(null)}
-          data-testid="session-sidebar-nav-item"
-          data-variant={item.key}
-          data-model-setup-guide-target={item.key === 'settings' ? 'settings' : undefined}
-        >
-          <span className="icon-rail-nav-item__icon">{item.icon}</span>
-          <span
-            className={`icon-rail-nav-item__label${item.key === 'personalContext' ? ' icon-rail-nav-item__label--multiline' : ''}`}
+      <nav className="sidebar-nav">
+        {visibleMainNavItems.map((item) => (
+          <button
+            key={item.key}
+            className={`side-nav-item${isNavItemActive(item) ? ' side-nav-item--active' : ''}`}
+            onClick={() => handleNavClick(item.key)}
+            onPointerDownCapture={() => onNavItemPointerDownCapture?.(item.key)}
+            onMouseEnter={() => onNavItemHover?.(item.key)}
+            onMouseLeave={() => onNavItemHover?.(null)}
+            data-testid="session-sidebar-nav-item"
+            data-variant={item.key}
           >
-            {getNavItemLabel(item)}
-          </span>
-        </button>
-      ))}
+            <span className="side-nav-item__icon">{item.icon}</span>
+            <span className="side-nav-item__label">{getNavItemLabel(item)}</span>
+          </button>
+        ))}
+      </nav>
 
       <div className="icon-rail-spacer" />
+
+      <div className="sidebar-divider" />
+      <button
+        className="side-nav-item side-nav-item--aux"
+        disabled
+        data-testid="session-sidebar-aux-item"
+        data-variant="productDocs"
+      >
+        <span className="side-nav-item__icon">{productDocsIcon}</span>
+        <span className="side-nav-item__label">{t('nav.productDocs')}</span>
+      </button>
+      <button
+        className="side-nav-item side-nav-item--aux"
+        disabled
+        data-testid="session-sidebar-aux-item"
+        data-variant="collapse"
+      >
+        <span className="side-nav-item__icon">{collapseIcon}</span>
+        <span className="side-nav-item__label">{t('nav.collapse')}</span>
+      </button>
+
+      <div className="sidebar-enterprise-card" data-testid="session-sidebar-enterprise-card">
+        <div className="sidebar-enterprise-card__title" data-testid="session-sidebar-enterprise-title">
+          {t('tender.enterpriseTitle')}
+        </div>
+        <div className="sidebar-enterprise-card__desc" data-testid="session-sidebar-enterprise-desc">
+          {t('tender.enterpriseDesc')}
+        </div>
+      </div>
     </aside>
   );
 }

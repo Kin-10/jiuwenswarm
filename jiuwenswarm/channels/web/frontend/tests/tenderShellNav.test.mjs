@@ -1,11 +1,13 @@
 /**
- * 标书系统前端壳的结构性校验。
+ * 标书系统前端壳的结构性校验（232px 宽单列菜单栏形态）。
  *
- * 1. 侧边栏 mainNavItems 只保留标书域的六个入口，且顺序固定：
- *    首页 / 标书工作区 / 企业产品库 / 企业资信库 / 技能 / 设置。
- * 2. 被隐藏的入口（agents、connectorMarket、experiments、personalContext、updatepanel 等）
+ * 1. 侧边栏 mainNavItems 是标书域的 9 个占位页入口，且顺序固定：
+ *    标书写作 / 招标解读 / 标书查重 / 暗标清标 / 创作中心 / 资料库 / 我的标书 / 商务标助手 / 标讯商机。
+ * 2. frontendPlatform.ts 的 TENDER_PLACEHOLDER_NAV_KEYS 与侧边栏 mainNavItems 保持一致，
+ *    App.tsx 用同一份 key 集合渲染 PlaceholderLibraryPage 占位页。
+ * 3. 通用 Agent 平台入口（chat/home/skills/settings/agents/connectorMarket 等）
  *    不再出现在 mainNavItems 里，避免回归把它们加回来。
- * 3. 产品库 / 资信库占位页按 variant 映射到 tender.* 文案键，zh / en 均有对应文案。
+ * 4. 9 个入口的 nav.* 文案、底部辅助项与企业版卡片的 tender.* 文案 zh / en 均有。
  */
 
 import assert from 'node:assert/strict';
@@ -15,22 +17,44 @@ import test from 'node:test';
 const root = new URL('../', import.meta.url);
 const source = (path) => readFileSync(new URL(path, root), 'utf8');
 
-const TENDER_NAV_KEYS = ['home', 'chat', 'productLibrary', 'qualificationLibrary', 'skills', 'settings'];
-const HIDDEN_NAV_KEYS = ['agents', 'connectorMarket', 'experiments', 'personalContext', 'personalContextSettings', 'updatepanel'];
+const TENDER_NAV_KEYS = [
+  'bidWriting',
+  'tenderReading',
+  'bidDuplicateCheck',
+  'bidCleaning',
+  'creationCenter',
+  'resourceLibrary',
+  'myBids',
+  'businessBidAssistant',
+  'bidOpportunities',
+];
+const HIDDEN_NAV_KEYS = [
+  'chat',
+  'home',
+  'skills',
+  'settings',
+  'agents',
+  'connectorMarket',
+  'experiments',
+  'personalContext',
+  'personalContextSettings',
+  'updatepanel',
+  'productLibrary',
+  'qualificationLibrary',
+];
 
 const sidebar = source('src/components/SessionSidebar/index.tsx');
 const mainNavItems = sidebar.slice(sidebar.indexOf('const mainNavItems'), sidebar.indexOf('export function SessionSidebar'));
 
-test('mainNavItems keeps exactly the six tender entries in order', () => {
+test('mainNavItems keeps exactly the nine tender placeholder entries in order', () => {
   const keys = [...mainNavItems.matchAll(/key: '([A-Za-z]+)'/g)].map((match) => match[1]);
   assert.deepEqual(keys, TENDER_NAV_KEYS);
 });
 
-test('mainNavItems maps tender entries to their i18n labels', () => {
-  assert.match(mainNavItems, /key: 'home', labelKey: 'nav\.home'/);
-  assert.match(mainNavItems, /key: 'chat', labelKey: 'nav\.work'/);
-  assert.match(mainNavItems, /key: 'productLibrary', labelKey: 'nav\.productLibrary'/);
-  assert.match(mainNavItems, /key: 'qualificationLibrary', labelKey: 'nav\.qualificationLibrary'/);
+test('mainNavItems maps each tender entry to its nav.* label', () => {
+  for (const key of TENDER_NAV_KEYS) {
+    assert.match(mainNavItems, new RegExp(`key: '${key}', labelKey: 'nav\\.${key}'`), `${key} must use nav.${key}`);
+  }
 });
 
 test('hidden legacy entries stay out of mainNavItems', () => {
@@ -39,15 +63,34 @@ test('hidden legacy entries stay out of mainNavItems', () => {
   }
 });
 
-test('tender nav and welcome copy exist in both zh and en locales', () => {
+test('frontendPlatform placeholder keys stay in sync with the sidebar', () => {
+  const platform = source('src/utils/frontendPlatform.ts');
+  const block = platform.slice(
+    platform.indexOf('TENDER_PLACEHOLDER_NAV_KEYS'),
+    platform.indexOf('];', platform.indexOf('TENDER_PLACEHOLDER_NAV_KEYS')),
+  );
+  const keys = [...block.matchAll(/'([A-Za-z]+)'/g)].map((match) => match[1]);
+  assert.deepEqual(keys, TENDER_NAV_KEYS);
+  for (const key of TENDER_NAV_KEYS) {
+    assert.match(platform, new RegExp(`\\| '${key}'`), `SidebarNavKey must include ${key}`);
+  }
+});
+
+test('App routes every tender placeholder nav key to PlaceholderLibraryPage', () => {
+  const app = source('src/App.tsx');
+  assert.match(app, /TENDER_PLACEHOLDER_NAV_KEY_SET\.has\(activeNav\)/);
+  assert.match(app, /<PlaceholderLibraryPage variant=\{activeNav\} \/>/);
+});
+
+test('tender nav, aux and enterprise copy exist in both zh and en locales', () => {
   const zh = JSON.parse(source('src/i18n/locales/zh.json'));
   const en = JSON.parse(source('src/i18n/locales/en.json'));
   for (const locale of [zh, en]) {
-    for (const key of ['home', 'work', 'productLibrary', 'qualificationLibrary']) {
+    for (const key of [...TENDER_NAV_KEYS, 'productDocs', 'collapse']) {
       assert.equal(typeof locale.nav[key], 'string', `nav.${key} must exist`);
       assert.ok(locale.nav[key].length > 0, `nav.${key} must be non-empty`);
     }
-    for (const key of ['productLibraryTitle', 'qualificationLibraryTitle', 'placeholderDescription']) {
+    for (const key of ['brandName', 'enterpriseTitle', 'enterpriseDesc', 'productLibraryTitle', 'qualificationLibraryTitle', 'placeholderDescription']) {
       assert.equal(typeof locale.tender[key], 'string', `tender.${key} must exist`);
       assert.ok(locale.tender[key].length > 0, `tender.${key} must be non-empty`);
     }
@@ -59,9 +102,23 @@ test('tender nav and welcome copy exist in both zh and en locales', () => {
   assert.equal(en.chat.welcomeHeading, 'Hi, this is the AI Bid System.');
 });
 
-test('placeholder library page binds each variant to its tender title', () => {
+test('sidebar renders brand, aux items and the enterprise card', () => {
+  assert.match(sidebar, /t\('tender\.brandName'\)/);
+  assert.match(sidebar, /t\('nav\.productDocs'\)/);
+  assert.match(sidebar, /t\('nav\.collapse'\)/);
+  assert.match(sidebar, /t\('tender\.enterpriseTitle'\)/);
+  assert.match(sidebar, /t\('tender\.enterpriseDesc'\)/);
+  assert.match(sidebar, /data-testid="session-sidebar-rail"/);
+  assert.match(sidebar, /data-testid="session-sidebar-nav-item"/);
+  assert.match(sidebar, /data-testid="session-sidebar-enterprise-card"/);
+});
+
+test('placeholder page accepts any variant string and falls back to the generic copy', () => {
   const page = source('src/features/tender/PlaceholderLibraryPage.tsx');
-  assert.match(page, /variant: 'productLibrary' \| 'qualificationLibrary'/);
+  assert.match(page, /variant: string/);
+  for (const key of TENDER_NAV_KEYS) {
+    assert.match(page, new RegExp(`${key}: 'nav\\.${key}'`), `TITLE_KEYS must map ${key}`);
+  }
   assert.match(page, /'tender\.productLibraryTitle'/);
   assert.match(page, /'tender\.qualificationLibraryTitle'/);
   assert.match(page, /t\('tender\.placeholderDescription'\)/);

@@ -18,111 +18,178 @@
 }
 
 /* ============================================
-   Icon Rail (64px sidebar)
-   Based on Pixso high-fidelity design
+   Wide single-column text nav (232px sidebar)
+   智标 AI 参考稿：品牌区 + 横向文字菜单项 + 底部辅助菜单
    ============================================ */
 
 .sidebar--icon-rail {
-  width: 72px;
-  max-width: 72px;
-  min-width: 72px;
+  width: 232px;
+  max-width: 232px;
+  min-width: 232px;
   flex-shrink: 0;
-  align-items: center;
-  padding: 0;
+  align-items: stretch;
+  padding: 0 12px 8px;
   position: relative;
   overflow: visible;
 }
 
 .shell--agent-management .sidebar--icon-rail {
-  width: 72px;
-  max-width: 72px;
-  min-width: 72px;
+  width: 232px;
+  max-width: 232px;
+  min-width: 232px;
 }
 
-/* Logo in icon rail — SVG handles gradient + mark */
-.icon-rail-logo {
-  width: 28px;
+/* Brand area: 32x32 rounded brand icon + product name */
+.sidebar-brand {
   height: 68px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  gap: 10px;
+  /* 容器已有 12px 横向 padding，叠加后整体左 20px / 右 16px */
+  padding: 0 4px 0 8px;
 }
 
-.icon-rail-logo img {
-  display: block;
-}
-
-/* Nav items in icon rail */
-.icon-rail-nav-item {
+.sidebar-brand__icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  width: 48px;
-  min-height: 48px;
-  margin-bottom: 8px;
+  border-radius: 9px;
+  background: var(--color-action-primary);
+  color: var(--color-action-primary-text);
+}
+
+.sidebar-brand__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sidebar-brand__name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding-top: 8px;
+}
+
+/* Horizontal text nav item: 38px height, 8px radius, 18px icon + 13.5px label */
+.side-nav-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 38px;
+  padding: 0 10px;
+  margin-bottom: 2px;
   border-radius: 8px;
   background: transparent;
   border: none;
   cursor: pointer;
   flex-shrink: 0;
+  text-align: left;
 }
 
-.icon-rail-nav-item__icon {
+.side-nav-item__icon {
   width: 18px;
   height: 18px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-text-secondary);
 }
 
-.icon-rail-nav-item__icon img,
-.icon-rail-nav-item__icon svg {
-  width: 16px;
-  height: 16px;
+.side-nav-item__icon svg {
+  width: 18px;
+  height: 18px;
 }
 
-.icon-rail-nav-item__label {
-  max-width: 44px;
-  overflow: hidden;
-  color: inherit;
-  font-size: 10px;
+.side-nav-item__label {
+  font-size: 13.5px;
   font-weight: 500;
-  line-height: 1.15;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* 仅"个人上下文"等需要多行换行显示的标签使用（如「我的\n上下文」/「My\nContext」） */
-.icon-rail-nav-item__label--multiline {
-  white-space: pre-line;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-}
-
-.icon-rail-nav-item {
   color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* hover 与选中态同色（--color-sidebar-nav-active） */
-.icon-rail-nav-item:hover {
+.side-nav-item:hover {
   background: var(--color-sidebar-nav-active);
 }
 
-.icon-rail-nav-item--active {
+.side-nav-item--active {
   background: var(--color-sidebar-nav-active);
 }
 
-.icon-rail-nav-item--active:hover {
+.side-nav-item--active:hover {
   background: var(--color-sidebar-nav-active);
+}
+
+.side-nav-item--active .side-nav-item__icon,
+.side-nav-item--active .side-nav-item__label {
+  color: var(--color-action-primary);
+}
+
+/* Bottom auxiliary items (产品文档 / 收起)：列表列已去掉，暂为禁用占位 */
+.side-nav-item--aux {
+  margin-bottom: 2px;
+}
+
+.side-nav-item--aux:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.side-nav-item--aux:disabled:hover {
+  background: transparent;
+}
+
+/* 1px divider above the bottom auxiliary menu */
+.sidebar-divider {
+  height: 1px;
+  flex-shrink: 0;
+  background: var(--color-border-default);
+  margin: 4px 0 6px;
 }
 
 /* Spacer pushes bottom items down */
 .icon-rail-spacer {
   flex: 1 1;
   min-height: 8px;
+}
+
+/* Enterprise upsell card at the very bottom: blue gradient, rounded */
+.sidebar-enterprise-card {
+  flex-shrink: 0;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--color-action-primary), var(--color-action-primary-hover));
+  color: var(--color-action-primary-text);
+}
+
+.sidebar-enterprise-card__title {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.sidebar-enterprise-card__desc {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0.85;
 }

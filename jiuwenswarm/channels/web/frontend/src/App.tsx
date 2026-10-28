@@ -147,6 +147,7 @@ import { toDisplaySessionTitle } from './utils/documentMessage';
 import {
   getHiddenNavItemsForPlatform,
   resolveFrontendPlatform,
+  TENDER_PLACEHOLDER_NAV_KEYS,
   type SidebarNavKey,
 } from './utils/frontendPlatform';
 import {
@@ -255,6 +256,9 @@ function normalizeConfigBoolean(value: unknown): boolean {
 }
 
 type MainNavKey = SidebarNavKey | 'connectorMarket' | ApplicationPluginNavKey;
+
+// 标书域占位页导航：宽单列侧边栏的 9 个一级入口都渲染 PlaceholderLibraryPage
+const TENDER_PLACEHOLDER_NAV_KEY_SET: ReadonlySet<string> = new Set(TENDER_PLACEHOLDER_NAV_KEYS);
 
 type LoadedHistoryBatch = {
   batchSeq: number;
@@ -4474,20 +4478,7 @@ const showWorkspaceDivider = effectiveTeamAreaExpanded && !showConversationNotFo
         {activeNav === 'chat' && (
           <>
             <div className="chat-layout flex-1 flex min-h-0 overflow-hidden">
-              <ConversationSidebar
-                activeSessionId={sessionId === NEW_CONVERSATION_ID ? null : sessionId}
-                onNew={(options) => requestSessionNavigation('new', options)}
-                onSelect={requestSessionNavigation}
-                onSelectDesignSession={handleSelectDesignSession}
-                activeDesignSessionId={route.kind === 'design-project' ? route.sessionId : undefined}
-                designCanvasOpen={designCanvasOpen}
-                onProjectRemoved={handleProjectRemoved}
-                onOpenCron={() => handleNavigate('cron')}
-                isCronActive={false}
-                collapsed={conversationSidebarCollapsed}
-                onToggleCollapse={() => { closeSidebarPeek(); setSecondarySidebarCollapsed(true); }}
-                hideCollapseButton={designCanvasOpen}
-              />
+              {/* 宽单列菜单栏形态下不再渲染会话列表列，主区直接是聊天工作区 */}
               {workspaceWorkMode === 'design' && route.kind === 'design-project' ? (
                   <DesignerPage
                     projectId={route.projectId}
@@ -4878,6 +4869,11 @@ const showWorkspaceDivider = effectiveTeamAreaExpanded && !showConversationNotFo
         {activeNav === 'qualificationLibrary' && (
           <div className="app-section">
             <PlaceholderLibraryPage variant="qualificationLibrary" />
+          </div>
+        )}
+        {TENDER_PLACEHOLDER_NAV_KEY_SET.has(activeNav) && (
+          <div className="app-section">
+            <PlaceholderLibraryPage variant={activeNav} />
           </div>
         )}
       </main>
