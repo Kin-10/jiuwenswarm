@@ -191,8 +191,8 @@
 }
 
 .chat-input-container--work-home .chat-input-editor {
-  min-height: 160px;
-  max-height: 240px;
+  min-height: 88px;
+  max-height: 120px;
   padding: 14px 16px 8px;
   border: none;
   border-radius: 0;
