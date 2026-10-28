@@ -4,7 +4,7 @@
   grid-template-rows: repeat(2, auto);
   gap: 8px;
   align-items: stretch;
-  margin: 0 4px 8px;
+  margin: 0;
 }
 
 .tender-upload-card {

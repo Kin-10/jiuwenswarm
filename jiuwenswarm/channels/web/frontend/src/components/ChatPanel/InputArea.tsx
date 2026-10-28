@@ -3936,12 +3936,6 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
           attachmentAlertPortalTarget,
         )}
       <div ref={composerFrameRef} className="chat-input-frame" data-testid="chat-panel-input-frame">
-        <TenderUploadCards
-          categories={tenderCategoryFiles}
-          onUpload={(category) => void handleTenderUpload(category)}
-          onRemove={handleTenderRemove}
-          disabled={composerDisabled}
-        />
         <input
           ref={tenderFileInputRef}
           type="file"
@@ -3987,7 +3981,13 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
             </div>
           )}
 
-          <div className="chat-input-body" data-testid="chat-panel-input-body">
+          <div className="chat-input-body chat-input-body--with-tender-cards" data-testid="chat-panel-input-body">
+            <TenderUploadCards
+              categories={tenderCategoryFiles}
+              onUpload={(category) => void handleTenderUpload(category)}
+              onRemove={handleTenderRemove}
+              disabled={composerDisabled}
+            />
             {(attachments.length > 0 || referencedAssetCards.length > 0) && (
               <div className="chat-input-attachment-panel" data-testid="chat-panel-input-attachment-panel">
                 <div
