@@ -301,6 +301,11 @@ body.workspace-resize-active iframe {
     grid-template-columns: 232px minmax(0, 1fr);
   }
 
+  /* Collapsed sidebar: shrink the nav grid column to 64px so content expands */
+  .shell--icon-rail:has(.sidebar--collapsed) {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
   /* Topbar */
   .topbar {
     grid-area: topbar;

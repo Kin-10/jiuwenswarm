@@ -5,6 +5,7 @@
  * 结构：品牌区 → 主导航 9 个标书域入口 → 弹性留白 → 分割线 → 辅助项 → 企业版卡片。
  */
 
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './SessionSidebar.css';
 import PluginIcon from '../../assets/agent-management/extension.svg?react';
@@ -155,6 +156,12 @@ const collapseIcon = (
   </svg>
 );
 
+const expandIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+);
+
 const mainNavItems: NavItem[] = [
   { key: 'bidWriting', labelKey: 'nav.bidWriting', icon: bidWritingIcon },
   { key: 'tenderReading', labelKey: 'nav.tenderReading', icon: tenderReadingIcon },
@@ -176,6 +183,7 @@ export function SessionSidebar({
   onNavItemPointerDownCapture,
 }: SessionSidebarProps) {
   const { t } = useTranslation();
+  const [collapsed, setCollapsed] = useState(false);
 
   const handleNavClick = (nav: MainNavKey) => {
     onNavigate(nav);
@@ -196,7 +204,11 @@ export function SessionSidebar({
   const isNavItemActive = (item: NavItem) => activeNav === item.key;
 
   return (
-    <aside className="sidebar sidebar--icon-rail" data-testid="session-sidebar-rail">
+    <aside
+      className={`sidebar sidebar--icon-rail${collapsed ? ' sidebar--collapsed' : ''}`}
+      data-testid="session-sidebar-rail"
+      data-variant={collapsed ? 'collapsed' : 'expanded'}
+    >
       <div className="sidebar-brand" data-testid="session-sidebar-logo">
         <span className="sidebar-brand__icon" aria-hidden>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
@@ -240,13 +252,15 @@ export function SessionSidebar({
         <span className="side-nav-item__label">{t('nav.productDocs')}</span>
       </button>
       <button
-        className="side-nav-item side-nav-item--aux"
-        disabled
-        data-testid="session-sidebar-aux-item"
-        data-variant="collapse"
+        className="side-nav-item side-nav-item--aux side-nav-item--collapse-toggle"
+        onClick={() => setCollapsed((prev) => !prev)}
+        data-testid="session-sidebar-collapse-toggle"
+        data-variant={collapsed ? 'collapsed' : 'expanded'}
+        aria-expanded={!collapsed}
+        title={collapsed ? t('nav.expand') : t('nav.collapse')}
       >
-        <span className="side-nav-item__icon">{collapseIcon}</span>
-        <span className="side-nav-item__label">{t('nav.collapse')}</span>
+        <span className="side-nav-item__icon">{collapsed ? expandIcon : collapseIcon}</span>
+        <span className="side-nav-item__label">{collapsed ? t('nav.expand') : t('nav.collapse')}</span>
       </button>
 
       <div className="sidebar-enterprise-card" data-testid="session-sidebar-enterprise-card">
