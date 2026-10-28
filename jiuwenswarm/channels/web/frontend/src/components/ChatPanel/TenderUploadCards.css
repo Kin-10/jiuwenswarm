@@ -20,6 +20,41 @@
   overflow: hidden;
 }
 
+.tender-upload-card-filled {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.tender-upload-card--tall .tender-upload-card-filled {
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tender-upload-card-success {
+  flex: 0 0 auto;
+  color: var(--color-feedback-success);
+  pointer-events: none;
+}
+
+.tender-upload-card-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.tender-upload-card--tall.tender-upload-card--filled .tender-upload-card-remove {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+}
+
 .tender-upload-card--tenderFile {
   grid-column: 1;
   grid-row: 1 / span 2;
@@ -97,17 +132,6 @@
 
 .tender-upload-card-add:disabled {
   cursor: not-allowed;
-}
-
-.tender-upload-card-filename {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--color-text-primary);
-  font-size: 13px;
-  line-height: 20px;
 }
 
 .tender-upload-card-remove {

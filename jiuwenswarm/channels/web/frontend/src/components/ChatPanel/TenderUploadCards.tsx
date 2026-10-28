@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import './TenderUploadCards.css';
 
@@ -57,9 +57,15 @@ export function TenderUploadCards({ categories, onUpload, onRemove, disabled = f
             )}
             {filename ? (
               <>
-                <span className="tender-upload-card-filename" title={filename}>
-                  {filename}
-                </span>
+                <div className="tender-upload-card-filled" title={filename}>
+                  <CheckCircle2
+                    size={16}
+                    className="tender-upload-card-success"
+                    aria-hidden="true"
+                    data-testid={`chat-tender-upload-success-${category}`}
+                  />
+                  <span className="tender-upload-card-label">{t(CATEGORY_LABEL_KEYS[category])}</span>
+                </div>
                 <button
                   type="button"
                   className="tender-upload-card-remove"
