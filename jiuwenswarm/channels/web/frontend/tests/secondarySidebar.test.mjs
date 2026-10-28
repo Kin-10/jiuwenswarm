@@ -41,7 +41,7 @@ function setup() {
 
 const finishHoverClose = () => act(() => new Promise(resolve => setTimeout(resolve, 180)));
 
-test('temporary previews and module switches preserve the shared preference across remounts', async () => {
+test('temporary previews and module switches reset the preference to default expanded across remounts', async () => {
   const env = setup();
   let state;
   function Harness() {
@@ -63,7 +63,8 @@ test('temporary previews and module switches preserve the shared preference acro
     await finishHoverClose();
     assert.equal(state.peek.target, null);
     env.remount(Harness);
-    assert.equal(state.collapsed, true);
+    // Remounts always start expanded, ignoring any saved localStorage residue.
+    assert.equal(state.collapsed, false);
     assert.equal(state.peek.target, null);
     act(() => state.setCollapsed(false));
     env.remount(Harness);
@@ -118,7 +119,7 @@ test('portaled interactions keep a flyout alive; outside clicks and Escape dismi
   }
 });
 
-test('responsive panel suppression never rewrites the saved sidebar preference', () => {
+test('responsive panel suppression never rewrites the default-expanded sidebar preference', () => {
   const env = setup();
   let state;
   function Harness() {
@@ -136,9 +137,11 @@ test('responsive panel suppression never rewrites the saved sidebar preference',
   }
   try {
     window.innerWidth = 1200;
+    localStorage.setItem('jiuwenswarm.secondarySidebarCollapsed', 'true');
     env.render(Harness);
     act(() => state.setExpanded(true));
     assert.equal(state.sidebarAutoCollapsed, true);
+    // Saved localStorage residue is ignored: the sidebar always starts expanded.
     assert.equal(state.collapsed, false);
     act(() => {
       window.innerWidth = 1600;
@@ -156,7 +159,8 @@ test('responsive panel suppression never rewrites the saved sidebar preference',
     act(() => state.setExpanded(false));
     assert.equal(state.sidebarAutoCollapsed, false);
     env.remount(Harness);
-    assert.equal(state.collapsed, true);
+    // The preference is not persisted: remounts return to the default expanded state.
+    assert.equal(state.collapsed, false);
   } finally {
     env.cleanup();
   }
