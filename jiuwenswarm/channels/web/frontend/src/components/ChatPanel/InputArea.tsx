@@ -98,6 +98,7 @@ import {
   type TenderUploadCategory,
   type TenderUploadCategoryFiles,
 } from './TenderUploadCards';
+import { TenderUploadDialog } from './TenderUploadDialog';
 import { Switch } from '../Switch';
 import { Button, CloseButton, Dialog, Input } from '../ui';
 import { Select } from '../ui/Select/Select';
@@ -2239,6 +2240,7 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
 
   const tenderFileInputRef = useRef<HTMLInputElement>(null);
   const [tenderPickerCategory, setTenderPickerCategory] = useState<TenderUploadCategory | null>(null);
+  const [tenderDialogOpen, setTenderDialogOpen] = useState(false);
 
   const handleTenderUpload = useCallback(
     async (category: TenderUploadCategory) => {
@@ -2303,6 +2305,51 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
     },
     [appendAttachmentFiles, removeTenderCategoryDraft, tenderPickerCategory],
   );
+
+  // 招标文件走上传弹窗：点击卡片打开弹窗，其它三个类别仍直接走 handleTenderUpload 选择文件。
+  const handleTenderCardUpload = useCallback(
+    (category: TenderUploadCategory) => {
+      if (category === 'tenderFile') {
+        setTenderDialogOpen(true);
+        return;
+      }
+      void handleTenderUpload(category);
+    },
+    [handleTenderUpload],
+  );
+
+  // 弹窗已上传列表 = 招标文件类别的附件 draft，状态/大小直接复用附件链路。
+  const tenderDialogFiles = useMemo(
+    () =>
+      attachments
+        .filter((attachment) => attachment.tenderCategory === 'tenderFile')
+        .map((attachment) => ({
+          id: attachment.id,
+          filename: attachment.filename,
+          size: attachment.size,
+          status: attachment.status,
+        })),
+    [attachments],
+  );
+
+  // 弹窗拖拽落地：与隐藏 input 同一回退路径，替换该类别已有 draft 再挂新文件（上限 1 个）。
+  const handleTenderDialogDropFiles = useCallback(
+    (files: File[]) => {
+      if (!files.length) return;
+      removeTenderCategoryDraft('tenderFile');
+      appendAttachmentFiles(files.slice(0, 1), 'tenderFile');
+    },
+    [appendAttachmentFiles, removeTenderCategoryDraft],
+  );
+
+  const handleTenderDialogConfirm = useCallback(() => {
+    const hasTenderFile = attachmentsRef.current.some((attachment) => attachment.tenderCategory === 'tenderFile');
+    if (!hasTenderFile) {
+      pushAttachmentAlert(t('chat.tenderUpload.tenderFileRequired'));
+      return;
+    }
+    setTenderDialogOpen(false);
+  }, [pushAttachmentAlert, t]);
 
   useImperativeHandle(
     ref,
@@ -3984,7 +4031,7 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
           <div className="chat-input-body chat-input-body--with-tender-cards" data-testid="chat-panel-input-body">
             <TenderUploadCards
               categories={tenderCategoryFiles}
-              onUpload={(category) => void handleTenderUpload(category)}
+              onUpload={handleTenderCardUpload}
               onRemove={handleTenderRemove}
               disabled={composerDisabled}
             />
@@ -5934,6 +5981,16 @@ export const InputArea = forwardRef<InputAreaHandle, InputAreaProps>(function In
           </Button>
         </div>
       </Dialog>
+      <TenderUploadDialog
+        open={tenderDialogOpen}
+        files={tenderDialogFiles}
+        formatSize={formatAttachmentSize}
+        onClose={() => setTenderDialogOpen(false)}
+        onConfirm={handleTenderDialogConfirm}
+        onUploadClick={() => void handleTenderUpload('tenderFile')}
+        onDropFiles={handleTenderDialogDropFiles}
+        onRemoveFile={removeAttachment}
+      />
       {goalOverwriteRequest && (
         <OverwriteGoalConfirmModal
           currentObjective={goalOverwriteRequest.currentObjective}

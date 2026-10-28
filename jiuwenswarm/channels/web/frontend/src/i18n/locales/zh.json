@@ -1923,7 +1923,22 @@
       "relatedCase": "相关案例",
       "other": "其他",
       "required": "必传",
-      "tenderFileRequired": "请先上传招标文件后再发送"
+      "tenderFileRequired": "请先上传招标文件后再发送",
+      "dialog": {
+        "title": "上传招标文件",
+        "tabTender": "招标文件(必填)",
+        "tabNotice": "招标公告",
+        "dropHint": "将文件拖到此处，或",
+        "clickUpload": "点击上传",
+        "constraint": "最多上传1个，总大小≤100MB，支持格式：doc/docx/pdf（不支持扫描版pdf）",
+        "uploadedCount": "已上传 {{n}}/1 个",
+        "colName": "名称",
+        "colSize": "大小",
+        "colStatus": "状态",
+        "statusSuccess": "上传成功",
+        "cancel": "取消",
+        "done": "完成"
+      }
     },
     "uploading": "上传中...",
     "uploadFailed": "上传失败",

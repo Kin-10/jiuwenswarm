@@ -1939,7 +1939,22 @@
       "relatedCase": "Related Cases",
       "other": "Other",
       "required": "Required",
-      "tenderFileRequired": "Please upload the tender document before sending"
+      "tenderFileRequired": "Please upload the tender document before sending",
+      "dialog": {
+        "title": "Upload Tender File",
+        "tabTender": "Tender File (required)",
+        "tabNotice": "Tender Notice",
+        "dropHint": "Drag files here, or ",
+        "clickUpload": "click to upload",
+        "constraint": "Up to 1 file, total size ≤ 100MB. Supported formats: doc/docx/pdf (scanned PDFs are not supported)",
+        "uploadedCount": "Uploaded {{n}}/1",
+        "colName": "Name",
+        "colSize": "Size",
+        "colStatus": "Status",
+        "statusSuccess": "Uploaded",
+        "cancel": "Cancel",
+        "done": "Done"
+      }
     },
     "uploading": "Uploading...",
     "uploadFailed": "Upload failed",
