@@ -37,11 +37,14 @@ export function TenderUploadCards({ categories, onUpload, onRemove, disabled = f
       {CATEGORY_ORDER.map((category) => {
         const filename = categories[category];
         const required = category === 'tenderFile';
+        const isTall = category === 'tenderFile' || category === 'listFile';
         return (
           <div
             key={category}
             className={clsx(
               'tender-upload-card',
+              `tender-upload-card--${category}`,
+              isTall ? 'tender-upload-card--tall' : 'tender-upload-card--short',
               filename ? 'tender-upload-card--filled' : 'tender-upload-card--empty',
               disabled && 'tender-upload-card--disabled',
             )}

@@ -1,14 +1,14 @@
 .tender-upload-cards {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, auto));
+  grid-template-rows: repeat(2, auto);
   gap: 8px;
+  align-items: stretch;
   margin: 0 4px 8px;
 }
 
 .tender-upload-card {
   position: relative;
-  flex: 1 1 0;
-  min-width: 120px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -18,6 +18,35 @@
   border-radius: 10px;
   background: var(--color-surface-card);
   overflow: hidden;
+}
+
+.tender-upload-card--tenderFile {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.tender-upload-card--listFile {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.tender-upload-card--relatedCase {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.tender-upload-card--other {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.tender-upload-card--tall {
+  min-width: 112px;
+  min-height: 100px;
+}
+
+.tender-upload-card--short {
+  min-width: 96px;
 }
 
 .tender-upload-card--filled {
@@ -55,6 +84,11 @@
   font-size: 13px;
   line-height: 20px;
   cursor: pointer;
+}
+
+.tender-upload-card--tall .tender-upload-card-add {
+  flex-direction: column;
+  gap: 6px;
 }
 
 .tender-upload-card-add:hover:not(:disabled) {
