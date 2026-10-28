@@ -4361,6 +4361,8 @@
   pointer-events: auto;
   cursor: pointer;
   mix-blend-mode: multiply;
+  -webkit-mask-image: radial-gradient(ellipse 78% 78% at 50% 50%, #000 55%, transparent 78%);
+  mask-image: radial-gradient(ellipse 78% 78% at 50% 50%, #000 55%, transparent 78%);
 }
 
 .chat-welcome__heading {
