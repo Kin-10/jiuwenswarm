@@ -1450,8 +1450,14 @@ export const ChatPanel = React.memo(function ChatPanel({
   // 标书解析页：提交含 document 附件的消息后，主区从消息流切换为解析结果页（设计 D-20261028-2054）。
   const [tenderParsingOpen, setTenderParsingOpen] = useState(false);
   const tenderAnalysis = useTenderAnalysis(tenderParsingOpen);
+  // 仅在既有会话之间切换时关闭解析页；欢迎页新建会话的首次 id 落地（new → 真实 id）不算切换，
+  // 否则解析页会在发送后立刻被关闭。
+  const tenderParsingPrevSessionRef = useRef(activeSessionId);
   useEffect(() => {
-    setTenderParsingOpen(false);
+    const prev = tenderParsingPrevSessionRef.current;
+    tenderParsingPrevSessionRef.current = activeSessionId;
+    if (!prev || prev === NEW_CONVERSATION_ID) return;
+    if (prev !== activeSessionId) setTenderParsingOpen(false);
   }, [activeSessionId]);
   const isAuthorized = useAuthStore((state) => state.islogin);
   const [bubbleVisible, setBubbleVisible] = useState(false);
