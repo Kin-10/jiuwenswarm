@@ -49,8 +49,7 @@ import { InputArea, type InputAreaHandle } from './InputArea';
 import ChatOverviewIcon from '../../assets/chat-overview.svg?react';
 import PanelCollapseIcon from '../../assets/panel-collapse.svg?react';
 import lineUpIcon from '../../assets/lineUp.svg';
-import beeFlyingIcon from '../../assets/bee-flying.webp';
-import beeStaticIcon from '../../assets/bee-static.png';
+import tenderMascot from '../../assets/tender-mascot.png';
 import homeBanner from '../../assets/home-banner.svg';
 import { NEW_CONVERSATION_ID } from '../../multi-session/state/newConversationLifecycle';
 import loadSendIcon from '../../assets/load-send.svg';
@@ -1146,7 +1145,7 @@ function BeeBanner({
   onTrigger: () => void;
   onLeave: () => void;
 }) {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [, setIsPlaying] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = useCallback(() => {
@@ -1170,7 +1169,7 @@ function BeeBanner({
   return (
     <img
       className={className}
-      src={isPlaying ? beeFlyingIcon : beeStaticIcon}
+      src={tenderMascot}
       alt={altText}
       data-testid="chat-panel-welcome-banner"
       onMouseEnter={handleMouseEnter}
