@@ -35,12 +35,11 @@ export type SidebarNavKey =
   | 'bidOpportunities';
 
 /**
- * 标书域主导航（宽单列侧边栏）的 9 个入口，全部指向占位页。
+ * 标书域主导航（宽单列侧边栏）的 8 个占位页入口；招标解读已是真实功能页，不在此集合。
  * SessionSidebar 主导航与 App 主区占位页分支共用同一份顺序。
  */
 export const TENDER_PLACEHOLDER_NAV_KEYS: readonly SidebarNavKey[] = [
   'bidWriting',
-  'tenderReading',
   'bidDuplicateCheck',
   'bidCleaning',
   'creationCenter',

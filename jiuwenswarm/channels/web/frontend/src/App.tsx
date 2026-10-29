@@ -216,6 +216,8 @@ import { setComfyuiWorkflowEnabled } from './features/designer/comfyuiFeatureCon
 import { setTeamOrganizationUiEnabled } from './features/teamOrganization/featureConfig';
 import { organizationOwnerStopTarget } from './features/teamOrganization/conversation';
 import { PlaceholderLibraryPage } from './features/tender/PlaceholderLibraryPage';
+import { TenderReadingPage } from './features/tender/TenderReadingPage';
+import { markTenderParsingOpen } from './components/ChatPanel/tenderParsingOpenIntent';
 import {
   normalizeTeamBootstrapMode,
   normalizeTeamDispatchMode,
@@ -4869,6 +4871,19 @@ const showWorkspaceDivider = effectiveTeamAreaExpanded && !showConversationNotFo
         {activeNav === 'qualificationLibrary' && (
           <div className="app-section">
             <PlaceholderLibraryPage variant="qualificationLibrary" />
+          </div>
+        )}
+        {activeNav === 'tenderReading' && (
+          <div className="app-section">
+            <TenderReadingPage
+              onNew={() => requestSessionNavigation('new')}
+              onOpenSession={(sessionId) => {
+                const target = sessions.find((item) => item.session_id === sessionId);
+                if (!target) return;
+                markTenderParsingOpen(sessionId);
+                requestSessionNavigation(target);
+              }}
+            />
           </div>
         )}
         {TENDER_PLACEHOLDER_NAV_KEY_SET.has(activeNav) && (
