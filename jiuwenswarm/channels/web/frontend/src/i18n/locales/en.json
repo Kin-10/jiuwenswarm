@@ -85,6 +85,13 @@
     "productLibraryTitle": "Product Library",
     "qualificationLibraryTitle": "Qualification Library",
     "placeholderDescription": "Coming soon.",
+    "readingPage": {
+      "newTitle": "New Parsing",
+      "newDesc": "Upload a tender file to automatically parse the project overview, scoring requirements, and qualification requirements",
+      "newAction": "Upload Tender File",
+      "historyTitle": "History",
+      "historyEmpty": "No parsing records yet. Upload a tender file to start your first parsing."
+    },
     "recycleBin": "Recycle Bin",
     "brandName": "ZhiBiao AI",
     "enterpriseTitle": "Enterprise",

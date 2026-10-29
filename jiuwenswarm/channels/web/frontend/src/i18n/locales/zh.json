@@ -85,6 +85,13 @@
     "productLibraryTitle": "企业产品库",
     "qualificationLibraryTitle": "企业资信库",
     "placeholderDescription": "功能规划中，敬请期待。",
+    "readingPage": {
+      "newTitle": "新建解读",
+      "newDesc": "上传招标文件，自动解析项目概述、评分要求与资格要求",
+      "newAction": "上传招标文件",
+      "historyTitle": "历史记录",
+      "historyEmpty": "暂无解读记录，上传招标文件开始第一次解读"
+    },
     "recycleBin": "回收站",
     "brandName": "智标 AI",
     "enterpriseTitle": "了解企业版",
