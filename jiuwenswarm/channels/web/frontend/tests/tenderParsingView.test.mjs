@@ -57,3 +57,19 @@ test('chat.tenderParsing.* keys exist in both zh and en', () => {
     assert.ok(en.chat.tenderParsing[key], `en missing ${key}`);
   }
 });
+
+test('ChatPanel records parsing session and consumes reopen intent', () => {
+  assert.match(panel, /upsertTenderParsingIndex\(\{/);
+  assert.match(panel, /consumeTenderParsingOpenIntent\(activeSessionId\)/);
+  const reading = source('src/features/tender/TenderReadingPage.tsx');
+  assert.ok(reading.includes('data-testid="tender-reading-page"'));
+  assert.ok(reading.includes('data-testid="tender-reading-new"'));
+  assert.ok(reading.includes('tender-reading-list'));
+});
+
+test('tender.readingPage.* keys exist in both zh and en', () => {
+  for (const key of ['newTitle', 'newDesc', 'newAction', 'historyTitle', 'historyEmpty']) {
+    assert.ok(zh.tender.readingPage[key], `zh missing tender.readingPage.${key}`);
+    assert.ok(en.tender.readingPage[key], `en missing tender.readingPage.${key}`);
+  }
+});
