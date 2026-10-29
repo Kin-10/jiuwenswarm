@@ -1,0 +1,138 @@
+.tender-reading-page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px 32px;
+  background: var(--color-surface-page);
+}
+
+.tender-reading-header {
+  margin-bottom: 16px;
+}
+
+.tender-reading-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.tender-reading-new {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 560px;
+  padding: 16px 18px;
+  border: 1px dashed var(--color-border-default);
+  border-radius: 12px;
+  background: var(--color-surface-card);
+  cursor: pointer;
+  text-align: left;
+}
+
+.tender-reading-new:hover {
+  border-color: var(--color-action-primary);
+}
+
+.tender-reading-new__icon {
+  flex: 0 0 auto;
+  color: var(--color-action-primary);
+}
+
+.tender-reading-new__texts {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tender-reading-new__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.tender-reading-new__desc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.tender-reading-new__action {
+  flex: 0 0 auto;
+  font-size: 13px;
+  color: var(--color-action-primary);
+  font-weight: 500;
+}
+
+.tender-reading-history {
+  margin-top: 24px;
+}
+
+.tender-reading-history__title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.tender-reading-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.tender-reading-empty__icon {
+  color: var(--color-text-placeholder);
+}
+
+.tender-reading-empty p {
+  margin: 0;
+}
+
+.tender-reading-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 720px;
+}
+
+.tender-reading-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 10px;
+  background: var(--color-surface-card);
+  cursor: pointer;
+  text-align: left;
+}
+
+.tender-reading-item:hover {
+  border-color: var(--color-action-primary);
+}
+
+.tender-reading-item__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tender-reading-item__meta {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
