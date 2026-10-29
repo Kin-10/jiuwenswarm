@@ -185,7 +185,8 @@
     "test:model-presentation": "node --test tests/modelPresentation.test.mjs",
     "test:tender-shell": "node --test tests/tenderShellNav.test.mjs",
     "test:tender-parsing": "esbuild src/components/ChatPanel/tenderAnalysisModel.ts --bundle --platform=node --format=esm --packages=external --outfile=node_modules/.cache/tender-parsing/tenderAnalysisModel.mjs && node --test tests/tenderAnalysisModel.test.mjs",
-    "test:tender-parsing-view": "node --test tests/tenderParsingView.test.mjs"
+    "test:tender-parsing-view": "node --test tests/tenderParsingView.test.mjs",
+    "test:tender-reading": "esbuild src/components/ChatPanel/tenderParsingIndex.ts src/components/ChatPanel/tenderParsingOpenIntent.ts --bundle --platform=node --format=esm --packages=external --outdir=node_modules/.cache/tender-reading --out-extension:.js=.mjs && node --test tests/tenderParsingIndex.test.mjs"
   },
   "dependencies": {
     "@a2ui/react": "0.8.0",
