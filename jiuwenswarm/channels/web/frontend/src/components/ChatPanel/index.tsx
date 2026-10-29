@@ -48,6 +48,8 @@ import { ContextCompressionLines } from './MessageItem';
 import { InputArea, type InputAreaHandle } from './InputArea';
 import { TenderParsingView } from './TenderParsingView';
 import { useTenderAnalysis } from './useTenderAnalysis';
+import { upsertTenderParsingIndex } from './tenderParsingIndex';
+import { consumeTenderParsingOpenIntent } from './tenderParsingOpenIntent';
 import ChatOverviewIcon from '../../assets/chat-overview.svg?react';
 import PanelCollapseIcon from '../../assets/panel-collapse.svg?react';
 import lineUpIcon from '../../assets/lineUp.svg';
@@ -1450,15 +1452,33 @@ export const ChatPanel = React.memo(function ChatPanel({
   // 标书解析页：提交含 document 附件的消息后，主区从消息流切换为解析结果页（设计 D-20261028-2054）。
   const [tenderParsingOpen, setTenderParsingOpen] = useState(false);
   const tenderAnalysis = useTenderAnalysis(tenderParsingOpen);
+  // 历史记录重开信号优先于切换复位：命中信号说明本次会话切换的目的就是打开解析页。
   // 仅在既有会话之间切换时关闭解析页；欢迎页新建会话的首次 id 落地（new → 真实 id）不算切换，
   // 否则解析页会在发送后立刻被关闭。
   const tenderParsingPrevSessionRef = useRef(activeSessionId);
   useEffect(() => {
     const prev = tenderParsingPrevSessionRef.current;
     tenderParsingPrevSessionRef.current = activeSessionId;
+    if (activeSessionId && activeSessionId !== NEW_CONVERSATION_ID && consumeTenderParsingOpenIntent(activeSessionId)) {
+      setTenderParsingOpen(true);
+      return;
+    }
     if (!prev || prev === NEW_CONVERSATION_ID) return;
     if (prev !== activeSessionId) setTenderParsingOpen(false);
   }, [activeSessionId]);
+  // 解析页真实打开且会话 id 落地后，写入招标解读历史索引（设计 D-20261028-2254 D-01）。
+  useEffect(() => {
+    if (!tenderParsingOpen) return;
+    if (!activeSessionId || activeSessionId === NEW_CONVERSATION_ID) return;
+    const file = tenderAnalysis.file;
+    if (!file) return;
+    upsertTenderParsingIndex({
+      sessionId: activeSessionId,
+      fileName: file.name,
+      size: file.size,
+      updatedAt: Date.now(),
+    });
+  }, [tenderParsingOpen, activeSessionId, tenderAnalysis.file]);
   const isAuthorized = useAuthStore((state) => state.islogin);
   const [bubbleVisible, setBubbleVisible] = useState(false);
   const [freeModelsPromptDismissed, setFreeModelsPromptDismissed] = useState(false);
